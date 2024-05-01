@@ -1,0 +1,10 @@
+node_modules
+*_sessions
+.env
+*.log
+*.png
+src/tmp/*
+!tmp/.gitkeep
+.wwebjs_auth/
+.wwebjs_cache/
+log
