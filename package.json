@@ -13,13 +13,15 @@
         "@bot-whatsapp/bot": "latest",
         "@bot-whatsapp/cli": "latest",
         "@bot-whatsapp/database": "latest",
-        "@bot-whatsapp/provider": "latest",
         "@bot-whatsapp/portal": "latest",
+        "@bot-whatsapp/provider": "latest",
+        "dotenv": "^16.4.5",
+        "openai": "^4.40.0",
         "whatsapp-web.js": "github:pedroslopez/whatsapp-web.js#webpack-exodus"
     },
     "devDependencies": {
-        "eslint-plugin-bot-whatsapp": "latest",
-        "eslint": "^8.52.0"
+        "eslint": "^8.52.0",
+        "eslint-plugin-bot-whatsapp": "latest"
     },
     "author": "",
     "license": "ISC"

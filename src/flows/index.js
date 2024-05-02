@@ -1,8 +1,10 @@
+const captureName = require('./captureName.js')
 const mainFlow = require('./main.js')
 
 
 const loadFlows = [
-  mainFlow
+  mainFlow,
+  captureName
 ]
 
 module.exports = loadFlows
