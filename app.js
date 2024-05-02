@@ -36,10 +36,11 @@ const main = async () => {
 					}
 				};
 		
-        await createBot(configBot, configExtra)
+        createBot(configBot, configExtra)
     
-        await QRPortalWeb(PORT)
+        QRPortalWeb(PORT)
     }catch(error){
+			console.log('Error found on app.js:', error)
 
     }
 

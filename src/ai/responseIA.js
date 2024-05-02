@@ -1,7 +1,9 @@
+const generatePromptInterpreter = require("./prompt/interpreter");
+
 const interpreter = async (body, AIresult) => {
   try {
     const ai = AIresult;
-    const PromptResponse = generatePromptResponse(body);
+    const PromptResponse = generatePromptInterpreter(body);
     const tmpMessages = [].concat({
       role: "system",
       content: PromptResponse,

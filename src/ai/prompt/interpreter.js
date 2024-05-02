@@ -19,7 +19,7 @@ const generatePromptInterpreter = (history) => {
   const parseTxt = [...history].reverse();
   const tmp = [];
 
-  for (let index = 0; index < 20; index++) {
+  for (let index = 0; index < 6; index++) {
     const element = parseTxt[index];
     if (element?.role === "assistant"){
       tmp.push(`J:{${element.content}}`)
