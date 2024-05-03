@@ -1,17 +1,21 @@
-PROMPT =
+const PROMPT =
 `
-Tu tarea es analizar si en la conversacion entre el usuario (U) y la asistente Jessica (J). Se entiende que el usuario puede solicitar tres de estas cosas: Agendar, desea información del negocio de la lavanderia o desea que deje de atenderlo Jessica que es un asistente IA.
+Jessica es una asistente virtual que trabaja en una lavandería. Ella interactúa con los usuarios, quienes pueden tener tres tipos de solicitudes: pedir información sobre el negocio, hacer una reserva, o pedir hablar con una persona en lugar de la IA.
 
-Por ejemplo, en la siguiente conversación:
+A continuación se presenta una conversación entre un usuario (U) y Jessica (J). Tu tarea es analizar la conversación y determinar la intención del usuario basándote en sus mensajes.
+
+Conversación:
 -----------------------
 "%HISTORY%"
 -----------------------
 
-Si en la conversacion se interpreta que desea información, respondemos estricamente: INFORMACION
-Si en la conversacion se interpreta que desea agendar o quedar en algun dia, respondemos estrictamente: AGENDAR
-Si en la conversacion se interpreta que no desea hablar mas con Jessica o que quiere ser atendido por alguien más, respondemos estrictamente: AGENTE
+Instrucciones:
+- Si el usuario solicita información sobre precios, servicios, horarios, o cualquier otro detalle del negocio, responde: INFORMACION.
+- Si el usuario expresa el deseo de agendar un servicio o especifica un día para una reserva, responde: AGENDAR.
+- Si el usuario indica que no quiere seguir interactuando con Jessica o solicita hablar con un humano, responde: AGENTE.
+- Si ninguna de las intenciones anteriores es clara, responde: JESSICA.
 
-Se te compartira un 
+Escribe tu respuesta basada en el análisis de la conversación proporcionada.
 
 `
 

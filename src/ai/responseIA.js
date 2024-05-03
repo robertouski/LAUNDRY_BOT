@@ -1,6 +1,6 @@
 const generatePromptInterpreter = require("./prompt/interpreter");
 
-const interpreter = async (body, AIresult) => {
+const interpreterResponse = async (body, AIresult) => {
   try {
     const ai = AIresult;
     const PromptResponse = generatePromptInterpreter(body);
@@ -15,4 +15,4 @@ const interpreter = async (body, AIresult) => {
   }
 }
 
-module.exports = {interpreter}
+module.exports = {interpreterResponse}
