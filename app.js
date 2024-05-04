@@ -16,7 +16,6 @@ const main = async () => {
 
         const ai = new AiService(apiKey);
         ai.on("gas_token", () => {});
-
         const adapterDB = new MockAdapter()
         const adapterFlow = createFlow(loadFlows)
         const adapterProvider = createProvider(WebWhatsappProvider)
@@ -37,6 +36,8 @@ const main = async () => {
 				};
 		
         createBot(configBot, configExtra)
+				console.log("Activando....", await configExtra.extensions.ai.talkToAssistant("asst_s2ZWVapmS6QaT2he3prkzoX0"))
+
     
         QRPortalWeb(PORT)
     }catch(error){

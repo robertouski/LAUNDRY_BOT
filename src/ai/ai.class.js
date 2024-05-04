@@ -38,6 +38,62 @@ class EmployeesAddon extends EventEmitter {
     this.chatHistory.set(from, []);
   }
 
+///////////////////////////////
+
+
+
+async talkToAssistant (assistantId) {
+  try {
+    const MESSAGE = "Cuanto cuesta el precio de recogida?"
+    const thread = await this.openai.beta.threads.create();
+
+    // Crear el mensaje inicial del usuario
+    await this.openai.beta.threads.messages.create(
+      thread.id,
+    { role: "user",
+      content: MESSAGE}
+    );
+
+    // Crear y ejecutar el run del asistente
+    const run = await this.openai.beta.threads.runs.create(
+      thread.id,
+      {assistant_id: assistantId}
+    );
+
+    // Esperar a que el run complete (esto puede requerir una implementación de polling o una espera activa)
+    let completedRun;
+    do {
+      completedRun = await this.openai.beta.threads.runs.retrieve(
+        thread.id,
+        run.id
+      );
+    } while (completedRun.status !== 'completed' && completedRun.status !== 'failed');
+
+    // Si el run falla, manejar el error
+    if (completedRun.status === 'failed') {
+      console.error("Run failed:", completedRun.last_error);
+      return null;
+    }
+
+    // Recuperar los mensajes después de que el run haya completado
+    const messages = await this.openai.beta.threads.messages.list(
+      thread.id
+    );
+
+    // Filtrar para obtener solo respuestas del asistente
+    const assistantMessages = messages.data.filter(m => m.role === 'assistant');
+    const lastMessage = assistantMessages[assistantMessages.length - 1];
+
+    return lastMessage ? lastMessage.content[0].text.value : "No response from assistant";
+  } catch (error) {
+    console.error('Error talking to assistant:', error);
+    return null;
+  }
+}
+
+
+////////////////////////////
+
   async createChat(messages, model, temperature = 0) {
     try {
       const completion = await this.openai.chat.completions.create({
