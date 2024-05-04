@@ -38,20 +38,14 @@ class EmployeesAddon extends EventEmitter {
     this.chatHistory.set(from, []);
   }
 
-///////////////////////////////
-
-
-
-async talkToAssistant (assistantId) {
+async talkToAssistant (assistantId, message = {}) {
   try {
-    const MESSAGE = "Cuanto cuesta el precio de recogida?"
     const thread = await this.openai.beta.threads.create();
 
     // Crear el mensaje inicial del usuario
     await this.openai.beta.threads.messages.create(
       thread.id,
-    { role: "user",
-      content: MESSAGE}
+      message
     );
 
     // Crear y ejecutar el run del asistente
@@ -91,8 +85,6 @@ async talkToAssistant (assistantId) {
   }
 }
 
-
-////////////////////////////
 
   async createChat(messages, model, temperature = 0) {
     try {

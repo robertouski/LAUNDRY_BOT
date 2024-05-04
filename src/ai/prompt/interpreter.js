@@ -9,6 +9,8 @@ Conversación:
 "%HISTORY%"
 -----------------------
 
+Hay que resaltar que la prioridad de la conversacion es en las ultimas conversaciones
+
 Instrucciones:
 - Si el usuario solicita información sobre precios, servicios, horarios, o cualquier otro detalle del negocio, responde: INFORMACION.
 - Si el usuario expresa el deseo de agendar un servicio o especifica un día para una reserva, responde: AGENDAR.
@@ -36,6 +38,7 @@ const generatePromptInterpreter = (history) => {
   const fullTxt = tmp.reverse().join("\n");
 
   const txt = PROMPT.replace("%HISTORY%", fullTxt);
+  console.log(txt)
   return txt;
 }
 

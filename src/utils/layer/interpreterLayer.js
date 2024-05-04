@@ -9,7 +9,7 @@ module.exports = async(ctx, ctxFn)=>{
 
   console.log('AIinterpreter:', IAinterpreter)
   if(IAinterpreter === 'INFORMACION'){
-    return await ctxFn.flowDynamic('Dejame te proporciono INFO')
+    return await ctxFn.gotoFlow(require('../../flows/informativeFlow'))
   }
   if(IAinterpreter === 'AGENDAR'){
     return await ctxFn.flowDynamic('Espera que aun no puedo AGENDAR')

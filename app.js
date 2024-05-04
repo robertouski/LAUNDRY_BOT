@@ -36,7 +36,7 @@ const main = async () => {
 				};
 		
         createBot(configBot, configExtra)
-				console.log("Activando....", await configExtra.extensions.ai.talkToAssistant("asst_s2ZWVapmS6QaT2he3prkzoX0"))
+				// console.log("Activando....", await configExtra.extensions.ai.talkToAssistant("asst_s2ZWVapmS6QaT2he3prkzoX0"))
 
     
         QRPortalWeb(PORT)
