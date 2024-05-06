@@ -9,13 +9,13 @@ Conversación:
 "%HISTORY%"
 -----------------------
 
-Hay que resaltar que la prioridad de la conversacion es en las ultimas conversaciones
+En el contexto de la conversación anterior, donde se discutieron varios temas, es esencial destacar y centrarse en los puntos discutidos en las últimas partes de la conversación. Por favor, considera principalmente la información y las preguntas planteadas más recientemente para proporcionar respuestas relevantes y actualizadas
 
 Instrucciones:
 - Si el usuario solicita información sobre precios, servicios, horarios, o cualquier otro detalle del negocio, responde: INFORMACION.
 - Si el usuario expresa el deseo de agendar un servicio o especifica un día para una reserva, responde: AGENDAR.
-- Si el usuario indica que no quiere seguir interactuando con Jessica o solicita hablar con un humano, responde: AGENTE.
-- Si ninguna de las intenciones anteriores es clara, responde: JESSICA.
+- Si el usuario indica que no quiere seguir interactuando con la IA o solicita hablar con un humano, responde: AGENTE.
+- Si el usuario se despide, responde: DESPEDIDA.
 
 Escribe tu respuesta basada en el análisis de la conversación proporcionada.
 

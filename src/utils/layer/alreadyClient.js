@@ -1,4 +1,5 @@
 const { checkUser } = require('../handler/userDataHandler')
+const { typing } = require('../tools/typing')
 
 module.exports = async (ctx, ctxFn) => {
   const userExists = await checkUser(ctx)
@@ -8,13 +9,15 @@ module.exports = async (ctx, ctxFn) => {
 
     const MESSAGE = 'Bienvenido a Lavanderia: Aroma Limpio 🫧'
     const MESSAGE_2 = '¿Cuál es tu nombre?'
+    typing(ctx,ctxFn)
     await ctxFn.flowDynamic([
       {
         body: MESSAGE,
         delay: 1000,
       },
     ])
-
+    
+    typing(ctx,ctxFn)
     await ctxFn.flowDynamic([
       {
         body: MESSAGE_2,

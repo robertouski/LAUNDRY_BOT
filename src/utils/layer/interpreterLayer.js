@@ -8,16 +8,17 @@ module.exports = async(ctx, ctxFn)=>{
   const IAinterpreter = await interpreterResponse(messages, ai)
 
   console.log('AIinterpreter:', IAinterpreter)
-  if(IAinterpreter === 'INFORMACION'){
+  if(IAinterpreter.includes('INFORMACION')){
     return await ctxFn.gotoFlow(require('../../flows/informativeFlow'))
   }
-  if(IAinterpreter === 'AGENDAR'){
-    return await ctxFn.flowDynamic('Espera que aun no puedo AGENDAR')
+  if(IAinterpreter.includes( 'AGENDAR')){
+    return await ctxFn.gotoFlow(require('../../flows/informativeFlow'))
+
   }
-  if(IAinterpreter === 'AGENTE'){
+  if(IAinterpreter.includes('AGENTE')){
     return await ctxFn.flowDynamic('Espera que aun no puedo AGENTE')
   }
-  if(IAinterpreter === 'JESSICA'){
+  if(IAinterpreter.includes('JESSICA')){
     return await ctxFn.flowDynamic('Espera que aun no puedo ponerte a Jessica')
   }
   }
