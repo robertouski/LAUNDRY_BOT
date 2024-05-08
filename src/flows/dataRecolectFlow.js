@@ -24,4 +24,14 @@ const captureName = addKeyword(EVENTS.ACTION)
   }
 )
 
-module.exports = captureName
+
+const captureDate = addKeyword(EVENTS.ACTION)
+.addAction({capture:true}, async(ctx, ctxFn) => {
+  const currentState = ctxFn.state.getMyState();
+  const userAnswer = ctx.body
+  
+})
+
+module.exports = 
+
+module.exports = {captureName, captureDate}

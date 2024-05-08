@@ -1,3 +1,4 @@
+const { captureName } = require('../../flows/dataRecolectFlow')
 const { checkUser } = require('../handler/userDataHandler')
 const { typing } = require('../tools/typing')
 
@@ -28,7 +29,7 @@ module.exports = async (ctx, ctxFn) => {
       role: "assistant",
       content: MESSAGE + MESSAGE_2,
     });
-  return await ctxFn.gotoFlow(require('../../flows/captureName'))
+  return await ctxFn.gotoFlow(captureName)
   }
 }
   return

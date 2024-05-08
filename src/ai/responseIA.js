@@ -1,4 +1,5 @@
 const generatePromptInterpreter = require("./prompt/interpreter");
+const {generatePromptSchedule, generatePromptScheduleInterpreter} = require("./prompt/schedule");
 
 const assistantId = process.env.ASSISTANT_ID
 const interpreterResponse = async (body, AIresult) => {
@@ -29,4 +30,39 @@ const informativeResponse = async (body, AIresult, idPhone) => {
   }
 }
 
-module.exports = {interpreterResponse, informativeResponse}
+const scheduleResponse = async (body, AIresult, availableDays, currentDate) => {
+  try {
+    const ai = AIresult;
+    const PromptResponse = generatePromptSchedule(body, availableDays, currentDate);
+    const tmpMessages = [].concat({
+      role: "system",
+      content: PromptResponse,
+    });
+    const assistantMsg = await ai.createChat(tmpMessages);
+    return String(assistantMsg);
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+};
+const scheduleDayResponse = async (body, AIresult, availableDays, currentDate) => {
+  try {
+    const ai = AIresult;
+    const PromptResponse = generatePromptScheduleInterpreter(body, availableDays, currentDate);
+    const tmpMessages = [].concat({
+      role: "system",
+      content: PromptResponse,
+    });
+    const assistantMsg = await ai.createChat(tmpMessages, 'gpt-4');
+    return String(assistantMsg);
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+};
+
+
+module.exports = {
+  interpreterResponse,
+  informativeResponse,
+  scheduleResponse,
+  scheduleDayResponse,
+};
