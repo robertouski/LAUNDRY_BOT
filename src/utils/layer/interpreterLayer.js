@@ -12,8 +12,6 @@ module.exports = async(ctx, ctxFn)=>{
     return await ctxFn.gotoFlow(require('../../flows/informativeFlow'))
   }
   if(IAinterpreter.includes( 'AGENDAR')){
-    await ctxFn.flowDynamic('¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨')
-    await ctxFn.flowDynamic('Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*')
     return await ctxFn.gotoFlow(require('../../flows/scheduleFlow'))
 
   }

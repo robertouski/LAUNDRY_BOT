@@ -1,4 +1,5 @@
 const { captureName, captureDate } = require('./dataRecolectFlow.js')
+const scheduleDateFinalFlow = require('./finalFlowResults.js')
 const informativeFlow = require('./informativeFlow.js')
 const mainFlow = require('./main.js')
 const scheduleFlow = require('./scheduleFlow.js')
@@ -9,7 +10,8 @@ const loadFlows = [
   captureName,
   informativeFlow,
   scheduleFlow,
-  captureDate
+  captureDate,
+  scheduleDateFinalFlow
 ]
 
 module.exports = loadFlows

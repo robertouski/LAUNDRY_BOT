@@ -26,14 +26,14 @@ function translateDateToSpanish(dateString) {
   };
 
   // Separar las partes de la cadena de fecha
-  const [day, month, dayNumber, year] = dateString.split(" ");
+  const [day, month, dayNumber] = dateString.split(" ");
 
   // Traducir usando los diccionarios
   const daySpanish = days[day];
   const monthSpanish = months[month];
 
   // Devolver el resultado en español
-  return `${daySpanish} ${dayNumber} de ${monthSpanish} de ${year}`;
+  return `${daySpanish} ${dayNumber} de ${monthSpanish} `;
 }
 
 module.exports = translateDateToSpanish

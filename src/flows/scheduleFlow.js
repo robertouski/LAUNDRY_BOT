@@ -3,15 +3,16 @@ const { freeCalendarSlots } = require("../utils/services/gcpCalendar");
 const { getCurrentTime } = require("../utils/tools/currentDate");
 const { scheduleResponse, scheduleDayResponse } = require("../ai/responseIA");
 const { typing } = require("../utils/tools/typing");
-const {
-  extractDaysWithAvailableSlots,
-} = require("../utils/handler/availableSlotsHandler");
-const translateDateToSpanish = require("../utils/handler/dateHandler");
+const { extractDaysWithAvailableSlots } = require("../utils/handler/availableSlotsHandler");
 const { captureDate } = require("./dataRecolectFlow");
+const translateDateToSpanish = require("../utils/tools/dateConverter");
 
-const scheduleFlow = addKeyword(EVENTS.ACTION).addAction(
-  { capture: true },
-  async (ctx, ctxFn) => {
+const scheduleFlow = addKeyword(EVENTS.ACTION)
+  .addAction(async (_, ctxFn) => {
+    await ctxFn.flowDynamic('¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨')
+    await ctxFn.flowDynamic('Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*')
+  })
+  .addAction({ capture: true }, async (ctx, ctxFn) => {
     await ctxFn.state.update({ imWorking: true });
     const ai = await ctxFn.extensions.ai;
     const answer = ctx.body;
@@ -42,17 +43,17 @@ const scheduleFlow = addKeyword(EVENTS.ACTION).addAction(
       await ctxFn.flowDynamic(
         `Estas queriendo agendar el: ${spanishDate}, es correcto?\nPor favor, responder *SI* o *NO*`
       );
+      await ctxFn.state.update({ imWorking: false });
       return await ctxFn.gotoFlow(captureDate);
     } else if (IAschedule === "NO_AVAILABLE") {
-      await ctxFn.fallBack(
+      return await ctxFn.fallBack(
         "Ese dia no tenemos disponible, por cierto, las reservaciones para agendar son con un maximo de una semana! 👩🏻‍💻🫧"
       );
     } else {
-      await ctxFn.fallBack(
+      return await ctxFn.fallBack(
         "¿Podrías indicarme el día que deseas? ¡Si puedes decirme el día, usando el día y su número de ese dia sería genial! 🫨🫧"
       );
     }
-  }
-);
+  });
 
 module.exports = scheduleFlow;

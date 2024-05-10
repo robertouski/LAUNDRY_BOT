@@ -1,7 +1,11 @@
 const generatePromptInterpreter = require("./prompt/interpreter");
-const {generatePromptSchedule, generatePromptScheduleInterpreter} = require("./prompt/schedule");
+const {
+  generatePromptSchedule,
+  generatePromptScheduleDayInterpreter,
+  generatePromptScheduleHourInterpreter,
+} = require("./prompt/schedule");
 
-const assistantId = process.env.ASSISTANT_ID
+const assistantId = process.env.ASSISTANT_ID;
 const interpreterResponse = async (body, AIresult) => {
   try {
     const ai = AIresult;
@@ -13,9 +17,9 @@ const interpreterResponse = async (body, AIresult) => {
     const assistantMsg = await ai.createChat(tmpMessages);
     return String(assistantMsg);
   } catch (error) {
-    console.log('ERROR', error);
+    console.log("ERROR", error);
   }
-}
+};
 const informativeResponse = async (body, AIresult, idPhone) => {
   try {
     const ai = AIresult;
@@ -26,14 +30,18 @@ const informativeResponse = async (body, AIresult, idPhone) => {
     });
     return String(assistantResponse);
   } catch (error) {
-    console.log('ERROR', error);
+    console.log("ERROR", error);
   }
-}
+};
 
 const scheduleResponse = async (body, AIresult, availableDays, currentDate) => {
   try {
     const ai = AIresult;
-    const PromptResponse = generatePromptSchedule(body, availableDays, currentDate);
+    const PromptResponse = generatePromptSchedule(
+      body,
+      availableDays,
+      currentDate
+    );
     const tmpMessages = [].concat({
       role: "system",
       content: PromptResponse,
@@ -44,25 +52,57 @@ const scheduleResponse = async (body, AIresult, availableDays, currentDate) => {
     console.log("ERROR", error);
   }
 };
-const scheduleDayResponse = async (body, AIresult, availableDays, currentDate) => {
+const scheduleDayResponse = async (
+  body,
+  AIresult,
+  availableDays,
+  currentDate
+) => {
   try {
     const ai = AIresult;
-    const PromptResponse = generatePromptScheduleInterpreter(body, availableDays, currentDate);
+    const PromptResponse = generatePromptScheduleDayInterpreter(
+      body,
+      availableDays,
+      currentDate
+    );
     const tmpMessages = [].concat({
       role: "system",
       content: PromptResponse,
     });
-    const assistantMsg = await ai.createChat(tmpMessages, 'gpt-4');
+    const assistantMsg = await ai.createChat(tmpMessages);
+    return String(assistantMsg);
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+};
+const scheduleHourResponse = async (
+  body,
+  AIresult,
+  availableDays,
+  currentDate
+) => {
+  try {
+    const ai = AIresult;
+    const PromptResponse = generatePromptScheduleHourInterpreter(
+      body,
+      availableDays,
+      currentDate
+    );
+    const tmpMessages = [].concat({
+      role: "system",
+      content: PromptResponse,
+    });
+    const assistantMsg = await ai.createChat(tmpMessages);
     return String(assistantMsg);
   } catch (error) {
     console.log("ERROR", error);
   }
 };
 
-
 module.exports = {
   interpreterResponse,
   informativeResponse,
   scheduleResponse,
   scheduleDayResponse,
+  scheduleHourResponse,
 };

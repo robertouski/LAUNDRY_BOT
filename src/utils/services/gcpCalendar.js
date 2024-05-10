@@ -1,14 +1,15 @@
-require('dotenv').config();
+require("dotenv").config();
 const { google } = require("googleapis");
+const getRandomColor = require("../tools/randomColor");
 
 // Load the credentials JSON file
 const credentials = JSON.parse(process.env.credentials);
-const SCOPES = ["https://www.googleapis.com/auth/calendar"]
-const calendarId = process.env.calendarId || "primary"
+const SCOPES = ["https://www.googleapis.com/auth/calendar"];
+const calendarId = process.env.calendarId || "primary";
 // Set up authentication from the JSON credentials
 const auth = new google.auth.GoogleAuth({
   credentials,
-  scopes: SCOPES ,
+  scopes: SCOPES,
 });
 
 // Create the Calendar API client
@@ -39,47 +40,80 @@ async function getCalendarEvents() {
 }
 
 // Main function to print free slots
+// Helper function to convert a Date object to the desired time zone
+function convertToTimeZone(date, timeZone) {
+  return new Date(date.toLocaleString("en-US", { timeZone }));
+}
+
+async function getCalendarEvents() {
+  try {
+    // Establecer inicio y fin del rango de fechas en UTC
+    const now = new Date();
+    now.setDate(now.getDate() + 1);
+    now.setHours(0, 0, 0, 0); // Inicio del día
+    const endOfDay = new Date(now);
+    endOfDay.setDate(endOfDay.getDate() + 10);
+    endOfDay.setHours(23, 59, 59, 999); // Fin del décimo día
+
+    const response = await calendar.events.list({
+      calendarId: calendarId,
+      timeMin: now.toISOString(),
+      timeMax: endOfDay.toISOString(),
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+
+    // Convertir los horarios ocupados a UTC-5
+    const timeZone = "America/Mexico_City"; // Reemplazar con la zona horaria correcta
+    return response.data.items.map((event) => ({
+      start: convertToTimeZone(new Date(event.start.dateTime), timeZone),
+      end: convertToTimeZone(new Date(event.end.dateTime), timeZone),
+    }));
+  } catch (error) {
+    console.error("Error retrieving events:", error);
+    return [];
+  }
+}
+
+// Main function to find and print free slots
 async function freeCalendarSlots() {
   try {
-    const events = await getCalendarEvents();
-    console.log("events:", events);
-    const busySlots = events.map((event) => ({
-      start: new Date(event.start.dateTime),
-      end: new Date(event.end.dateTime),
-    }));
-
+    const busySlots = await getCalendarEvents();
     const availableSlots = {};
 
-    // Iniciar el cálculo desde el día actual a las 5 am
-    const now = new Date();
-    now.setHours(5, 0, 0, 0); // Iniciar desde las 5 am el día actual
-    const endOfDay = new Date(now);
-    endOfDay.setDate(endOfDay.getDate() + 7); // Contar hasta 7 días a partir de hoy
-    endOfDay.setHours(23, 59, 59, 999); // Establecer el tiempo al final del día
+    // Iniciar desde las 8 AM hora local
+    const now = convertToTimeZone(new Date(), "America/Mexico_City");
+    now.setHours(8, 0, 0, 0);
 
+    // Finalizar hasta las 3:59 PM hora local, siete días a partir de hoy
+    const endOfDay = new Date(now);
+    endOfDay.setDate(endOfDay.getDate() + 7);
+    endOfDay.setHours(15, 59, 59, 999);
+
+    // Inicializar slots disponibles para cada día dentro del rango
     let currentDay = new Date(now);
     while (currentDay <= endOfDay) {
-      // Si el día actual es domingo (0), no se debe registrar
       if (currentDay.getDay() !== 0) {
+        // Evitar los domingos (0 es domingo)
         availableSlots[currentDay.toDateString()] = [];
       }
       currentDay.setDate(currentDay.getDate() + 1);
     }
 
-    // Iterar sobre cada hora de cada día desde las 10 am hasta las 4 pm
+    // Iterar cada hora desde las 8 AM hasta las 4 PM hora local
     let currentTime = new Date(now);
-
     while (currentTime <= endOfDay) {
-      // Verificar si el día es domingo (0)
       const currentDayKey = currentTime.toDateString();
       if (currentTime.getDay() !== 0 && currentDayKey in availableSlots) {
-        if (currentTime.getHours() >= 10 && currentTime.getHours() <= 16) {
+        if (currentTime.getHours() >= 8 && currentTime.getHours() < 16) {
           const currentSlotEnd = new Date(currentTime);
-          currentSlotEnd.setHours(currentSlotEnd.getHours() + 1); // Fin de la hora actual
+          currentSlotEnd.setHours(currentSlotEnd.getHours() + 1);
 
-          // Verificar si la franja actual está ocupada por algún evento
+          // Verificar si la franja está ocupada
           const isSlotFree = !busySlots.some((busySlot) => {
-            return busySlot.start <= currentTime && busySlot.end >= currentSlotEnd;
+            return (
+              busySlot.start <= currentTime && busySlot.end >= currentSlotEnd
+            );
           });
 
           if (isSlotFree) {
@@ -94,21 +128,21 @@ async function freeCalendarSlots() {
       // Avanzar a la siguiente hora
       currentTime.setHours(currentTime.getHours() + 1);
     }
+
     return availableSlots;
   } catch (error) {
     console.error("Error finding free slots:", error);
+    return {};
   }
 }
 
-
-
-async function createEvent(name, description, eventDate, mail) {
+async function createEvent(name, description, eventDate, location) {
   try {
     //"2024-03-12T07:00:00";
     const event = {
-      summary: "Reunion con " + name,
-      location: "Guayaquil",
-      description: `${description} "su correo" ${mail}`,
+      summary: "Cliente: " + name,
+      location: `${location}`,
+      description: `${description}`,
       start: {
         dateTime: eventDate,
         timeZone: "America/Guayaquil", // Specify your timezone here
@@ -119,10 +153,11 @@ async function createEvent(name, description, eventDate, mail) {
         ).toISOString(), // End time 1 hour after start time
         timeZone: "America/Guayaquil", // Specify your timezone here
       },
+      colorId: getRandomColor(),
     };
 
     const response = await calendar.events.insert({
-      calendarId: calendarId , // Specify the calendar ID
+      calendarId: calendarId, // Specify the calendar ID
       resource: event,
     });
 

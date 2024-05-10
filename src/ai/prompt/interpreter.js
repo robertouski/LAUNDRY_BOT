@@ -38,7 +38,6 @@ const generatePromptInterpreter = (history) => {
   const fullTxt = tmp.reverse().join("\n");
 
   const txt = PROMPT.replace("%HISTORY%", fullTxt);
-  console.log(txt)
   return txt;
 }
 
