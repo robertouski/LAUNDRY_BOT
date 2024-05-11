@@ -1,3 +1,4 @@
+const generatePromptAclaration = require("./prompt/aclaration");
 const generatePromptInterpreter = require("./prompt/interpreter");
 const {
   generatePromptSchedule,
@@ -15,6 +16,21 @@ const interpreterResponse = async (body, AIresult) => {
       content: PromptResponse,
     });
     const assistantMsg = await ai.createChat(tmpMessages);
+    return String(assistantMsg);
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+};
+const aclarationResponse = async (body, AIresult) => {
+  try {
+    const ai = AIresult;
+    const PromptResponse = generatePromptAclaration(body);
+    const tmpMessages = [].concat({
+      role: "system",
+      content: PromptResponse,
+    });
+    const assistantMsg = await ai.createChat(tmpMessages);
+    await ai.clearHistory();
     return String(assistantMsg);
   } catch (error) {
     console.log("ERROR", error);
@@ -105,4 +121,5 @@ module.exports = {
   scheduleResponse,
   scheduleDayResponse,
   scheduleHourResponse,
+  aclarationResponse
 };

@@ -1,6 +1,8 @@
 const { addKeyword, EVENTS } = require("@bot-whatsapp/bot")
-const { createEvent } = require("../utils/services/gcpCalendar")
+const { createEvent } = require("../utils/services/gcpCalendar");
 
+const GoogleSheetService = require("../utils/services/gcpSheets");
+const googleSheet = new GoogleSheetService(process.env.GOOGLE_SHEET_ID);
 
 const scheduleDateFinalFlow = addKeyword(EVENTS.ACTION)
 .addAction(async(_,ctxFn)=>{

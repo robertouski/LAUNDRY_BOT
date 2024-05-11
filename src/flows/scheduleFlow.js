@@ -3,14 +3,20 @@ const { freeCalendarSlots } = require("../utils/services/gcpCalendar");
 const { getCurrentTime } = require("../utils/tools/currentDate");
 const { scheduleResponse, scheduleDayResponse } = require("../ai/responseIA");
 const { typing } = require("../utils/tools/typing");
-const { extractDaysWithAvailableSlots } = require("../utils/handler/availableSlotsHandler");
+const {
+  extractDaysWithAvailableSlots,
+} = require("../utils/handler/availableSlotsHandler");
 const { captureDate } = require("./dataRecolectFlow");
 const translateDateToSpanish = require("../utils/tools/dateConverter");
 
 const scheduleFlow = addKeyword(EVENTS.ACTION)
   .addAction(async (_, ctxFn) => {
-    await ctxFn.flowDynamic('¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨')
-    await ctxFn.flowDynamic('Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*')
+    await ctxFn.flowDynamic(
+      "¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨"
+    );
+    await ctxFn.flowDynamic(
+      'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
+    );
   })
   .addAction({ capture: true }, async (ctx, ctxFn) => {
     await ctxFn.state.update({ imWorking: true });

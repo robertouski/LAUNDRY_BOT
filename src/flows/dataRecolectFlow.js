@@ -1,5 +1,4 @@
 const { addKeyword, EVENTS } = require("@bot-whatsapp/bot");
-const { registerUser } = require("../utils/handler/userDataHandler");
 const { typing } = require("../utils/tools/typing");
 const { scheduleHourResponse } = require("../ai/responseIA");
 const { getCurrentTime } = require("../utils/tools/currentDate");
@@ -17,7 +16,6 @@ const captureName = addKeyword(EVENTS.ACTION).addAction(
       content: ctx.body,
     });
     const currentState = await ctxFn.state.getMyState();
-    registerUser(currentState.name, ctx.from);
     typing(ctx, ctxFn);
     const MESSAGE = `Perfecto! ${currentState.name} en que puedo ayudarte? 👕🫧`;
     await ctxFn.flowDynamic([{ body: MESSAGE, delay: 1000 }]);

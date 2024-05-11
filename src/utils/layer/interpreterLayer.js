@@ -1,28 +1,32 @@
-const { interpreterResponse } = require("../../ai/responseIA");
+const { interpreterResponse, aclarationResponse } = require("../../ai/responseIA");
+const { typing } = require("../tools/typing");
 
 module.exports = async(ctx, ctxFn)=>{
   try{
     const ai = await ctxFn.extensions.ai
   const messages = ai.getHistory(ctx.from)
-  console.log("getHistory:", messages)
   const IAinterpreter = await interpreterResponse(messages, ai)
 
   console.log('AIinterpreter:', IAinterpreter)
   if(IAinterpreter.includes('INFORMACION')){
     return await ctxFn.gotoFlow(require('../../flows/informativeFlow'))
   }
-  if(IAinterpreter.includes( 'AGENDAR')){
+  else if(IAinterpreter.includes( 'AGENDAR')){
     return await ctxFn.gotoFlow(require('../../flows/scheduleFlow'))
 
   }
-  if(IAinterpreter.includes('AGENTE')){
+  else if(IAinterpreter.includes('AGENTE')){
     return await ctxFn.flowDynamic('Espera que aun no puedo AGENTE')
   }
-  if(IAinterpreter.includes('JESSICA')){
-    return await ctxFn.flowDynamic('Espera que aun no puedo ponerte a Jessica')
+  else if(IAinterpreter.includes('NO_SENSE')){
+    const ai = await ctxFn.extensions.ai;
+    const messages = ai.getHistory(ctx.from);
+    const IAresponse = await aclarationResponse(messages, ai);
+    typing(ctx, ctxFn)
+    return await ctxFn.flowDynamic([{body:IAresponse, delay: 1000}])
   }
   }
   catch(error){
     console.log('Error Interpreter:', error)
   }
-  }
+}
