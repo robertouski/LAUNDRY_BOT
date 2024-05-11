@@ -54,7 +54,7 @@ async talkToAssistant (assistantId, message = {}) {
       {assistant_id: assistantId}
     );
 
-    // Esperar a que el run complete (esto puede requerir una implementación de polling o una espera activa)
+    // Esperar a que el run complete
     let completedRun;
     do {
       completedRun = await this.openai.beta.threads.runs.retrieve(
