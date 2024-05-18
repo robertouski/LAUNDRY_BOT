@@ -8,6 +8,7 @@ const informativeFlow = addKeyword(EVENTS.ACTION)
   try {
     const ai = await ctxFn.extensions.ai;
     const messages = ai.getHistory(ctx.from);
+    console.log("messages:", messages)
     const onlyOneMessage = [...messages].reverse()[0];
     const IAinformative = await informativeResponse(onlyOneMessage, ai, ctx.from);
     typing(ctx, ctxFn)

@@ -10,22 +10,38 @@ const { captureDate } = require("./dataRecolectFlow");
 const translateDateToSpanish = require("../utils/tools/dateConverter");
 
 const scheduleFlow = addKeyword(EVENTS.ACTION)
-  .addAction(async (_, ctxFn) => {
+  .addAction(async (ctx, ctxFn) => {
+    const ai = await ctxFn.extensions.ai
+    const MESSAGE_1 = "¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨"
+    const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
     await ctxFn.flowDynamic(
-      "¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨"
+      MESSAGE_1
     );
     await ctxFn.flowDynamic(
-      'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
+      MESSAGE_2
     );
+    ai.addHistory(ctx.from, {
+      role: "assistant",
+      content: MESSAGE_1 + MESSAGE_2,
+    })
   })
   .addAction({ capture: true }, async (ctx, ctxFn) => {
     await ctxFn.state.update({ imWorking: true });
     const ai = await ctxFn.extensions.ai;
     const answer = ctx.body;
     if (answer === "CANCELAR" || answer === "cancelar") {
+      ai.addHistory(ctx.from, {
+        role: "user",
+        content: answer,
+      })
+      ai.addHistory(ctx.from, {
+        role: "assistant",
+        content: "Volvamoslo a intentar! En que te puedo ayudar?",
+      })
       return await ctxFn.endFlow(
         "Volvamoslo a intentar! En que te puedo ayudar?"
       );
+      
     }
     console.log("answer:", answer);
     const currentTime = getCurrentTime();

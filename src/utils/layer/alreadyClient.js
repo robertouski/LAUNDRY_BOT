@@ -12,7 +12,7 @@ module.exports = async (ctx, ctxFn) => {
   if(!userData && !currentState?.name){
   const ai = await ctxFn.extensions.ai
 
-    const MESSAGE = 'Bienvenido a Lavanderia: Aroma Limpio 🫧'
+    const MESSAGE = 'Bienvenido a Lavanderia CHIC 🫧'
     const MESSAGE_2 = '¿Cuál es tu nombre y apellido?'
     typing(ctx,ctxFn)
     await ctxFn.flowDynamic([
@@ -26,7 +26,7 @@ module.exports = async (ctx, ctxFn) => {
     await ctxFn.flowDynamic([
       {
         body: MESSAGE_2,
-        delay: 1000,
+        delay: 500,
       },
     ]);
     ai.addHistory(ctx.from, {
