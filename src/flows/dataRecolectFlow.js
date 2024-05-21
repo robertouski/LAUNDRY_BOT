@@ -5,6 +5,7 @@ const { getCurrentTime } = require("../utils/tools/currentDate");
 const { freeCalendarSlots } = require("../utils/services/gcpCalendar");
 const { availableSlotsHandler } = require("../utils/handler/availableSlotsHandler");
 const scheduleDateFinalFlow = require("./finalFlowResults");
+const { createInbox } = require("../utils/services/chatwootService");
 
 const captureName = addKeyword(EVENTS.ACTION).addAction(
   { capture: true },

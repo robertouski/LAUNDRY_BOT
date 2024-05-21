@@ -26,11 +26,16 @@ class ServerHttp {
     res.send('ok');
   };
 
-  initialization = () => {
+  initialization = (bot) => {
+    if (!bot) {
+      throw new Error('DEBES_DE_PASAR_BOT');
+    }
+    console.log('Bot in ServerHttp:', bot);
     this.app = express();
     this.app.use(cors());
-    this.app.use((req, res, next) => {
-      req.providerWs = this.providerWs; // Pasar el proveedor de WhatsApp a todas las rutas
+    this.app.use((req, _, next) => {
+      req.providerWs = this.providerWs; 
+      req.bot = bot;
       next();
     });
     this.app.use(express.json()); // Para manejar JSON en las solicitudes

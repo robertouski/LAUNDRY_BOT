@@ -1,9 +1,23 @@
-const chatwootService = require('../services/chatwootService');
+const chatwootService = require('../utils/services/chatwootService');
+
+
+
+const createInbox = async (req, res) => {
+  const { name } = req.body;
+  try {
+    const inbox = await chatwootService.createInbox(name);
+    res.status(201).json(inbox);
+  } catch (error) {
+    console.error('Error in createInbox:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const createConversation = async (req, res) => {
-  const { sourceId, inboxId, contact, message } = req.body;
+  const { inboxId, contact, content } = req.body;
+  console.log("req.body:", req.body)
   try {
-    const conversation = await chatwootService.createConversation(sourceId, inboxId, contact, message);
+    const conversation = await chatwootService.createConversation(inboxId, contact, content);
     res.status(201).json(conversation);
   } catch (error) {
     console.error('Error in createConversation:', error);
@@ -11,14 +25,24 @@ const createConversation = async (req, res) => {
   }
 };
 
+const createConversationInLaundryChicBotInbox = async (req, res) => {
+  const { contact, message } = req.body;
+  try {
+    const inboxId = await chatwootService.getInboxIdByName('LAUNDRY CHIC BOT');
+    const messageContent = message[0]?.content;
+    const conversation = await chatwootService.createConversation(null, inboxId, contact, messageContent);
+    res.status(201).json(conversation);
+  } catch (error) {
+    console.error('Error in createConversationInLaundryChicBotInbox:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 const handleWebhook = async (req, res) => {
   try {
     const event = req.body;
-    const client = req.providerWs.getInstance(); // Utilizar el método getInstance
-
-    console.log('Client from provider:', client);
-    console.log('Webhook received:', event);
-
+    const client = req.providerWs.getInstance(); 
     switch (event.event) {
       case 'conversation_created':
         await handleConversationCreated(event);
@@ -72,5 +96,7 @@ const handleMessageCreated = async (event, client) => {
 
 module.exports = {
   createConversation,
-  handleWebhook
+  handleWebhook,
+  createInbox,
+  createConversationInLaundryChicBotInbox
 };
