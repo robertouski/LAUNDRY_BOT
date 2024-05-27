@@ -30,7 +30,6 @@ class ServerHttp {
     if (!bot) {
       throw new Error('DEBES_DE_PASAR_BOT');
     }
-    console.log('Bot in ServerHttp:', bot);
     this.app = express();
     this.app.use(cors());
     this.app.use((req, _, next) => {

@@ -6,10 +6,10 @@ const googleSheet = new GoogleSheetService(process.env.GOOGLE_SHEET_ID);
 
 const scheduleDateFinalFlow = addKeyword(EVENTS.ACTION)
 .addAction(async(_,ctxFn)=>{
-  await ctxFn.flowDynamic('Comparteme la siguiente información para agendarte 👩🏻‍💻')
-  return await ctxFn.flowDynamic([{body: 'Nombre y apellido, por favor', delay: 1000}])
+  await ctxFn.flowDynamic([{body: 'Comparteme la siguiente información para agendarte 👩🏻‍💻', delay: 1000}])
+  return 
 })
-.addAction({capture:true}, async(ctx, ctxFn)=>{
+.addAction(async(ctx, ctxFn)=>{
   await ctxFn.state.update({name: ctx.body})
   return await ctxFn.flowDynamic([{body: 'Cuál es tu dirección? si me puedes entregar algun detalle de la zona, mejor! 📍', delay: 1000}])
 })

@@ -1,17 +1,39 @@
-const handlerMessage = async (dataIn = { phone: '', name: '', message: '', mode: '', attachment: [] }, chatwoot) => {
-  const inbox = await chatwoot.findOrCreateInbox({ name: 'CHIC-BOTWS' });
-  const contact = await chatwoot.findOrCreateContact({ from: dataIn.phone, name: dataIn.name });
-  const conversation = await chatwoot.findOrCreateConversation({
+const handlerMessage = async (
+  dataIn = { phone: "", name: "", message: "", mode: "", attachment: [] },
+  chatwoot
+) => {
+  try {
+		console.log('Esto recibo en index, handlerMessage:', dataIn)
+    const inbox = await chatwoot.findOrCreateInbox({
+      name: "LAUNDRY_CHIC-BOTWS",
+    });
+    console.log("inbox:", inbox)
+
+    if (!inbox) throw new Error("Failed to find or create inbox");
+
+    const contact = await chatwoot.findOrCreateContact({
+      from: dataIn.phone,
+      name: dataIn.name,
+    });
+		console.log('contact:', contact)
+    if (!contact) throw new Error("Failed to find or create contact");
+    const conversation = await chatwoot.findOrCreateConversation({
       inbox_id: inbox.id,
       contact_id: contact.id,
-      phone_number: dataIn.phone
-  });
-  await chatwoot.createMessage({
+      phone_number: dataIn.phone,
+    });
+		console.log('conversation:', conversation)
+    if (!conversation) throw new Error("Failed to find or create conversation");
+
+    await chatwoot.createMessage({
       msg: dataIn.message,
-      mode: dataIn.mode,
+      mode: dataIn.mode, // incoming o outgoing
       conversation_id: conversation.id,
-      attachment: dataIn.attachment
-  });
-}
+      attachment: dataIn.attachment,
+    });
+  } catch (error) {
+    console.error("Error during handlerMessage:", error);
+  }
+};
 
 module.exports = { handlerMessage };

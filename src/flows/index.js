@@ -1,3 +1,4 @@
+const agentFlow = require('./agentFlow.js')
 const { captureName, captureDate } = require('./dataRecolectFlow.js')
 const scheduleDateFinalFlow = require('./finalFlowResults.js')
 const informativeFlow = require('./informativeFlow.js')
@@ -11,7 +12,8 @@ const loadFlows = [
   informativeFlow,
   scheduleFlow,
   captureDate,
-  scheduleDateFinalFlow
+  scheduleDateFinalFlow,
+  agentFlow
 ]
 
 module.exports = loadFlows

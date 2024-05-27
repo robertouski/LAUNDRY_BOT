@@ -12,7 +12,7 @@ const translateDateToSpanish = require("../utils/tools/dateConverter");
 const scheduleFlow = addKeyword(EVENTS.ACTION)
   .addAction(async (ctx, ctxFn) => {
     const ai = await ctxFn.extensions.ai
-    const MESSAGE_1 = "¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8 AM👩🏻‍💻✨"
+    const MESSAGE_1 = "¿Podrías decirme qué día tienes disponible? Atendemos de Lunes a Viernes a partir de las 8:30 AM hasta las 6:00 PM👩🏻‍💻✨"
     const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
     await ctxFn.flowDynamic(
       MESSAGE_1

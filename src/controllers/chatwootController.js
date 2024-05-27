@@ -15,7 +15,6 @@ const createInbox = async (req, res) => {
 
 const createConversation = async (req, res) => {
   const { inboxId, contact, content } = req.body;
-  console.log("req.body:", req.body)
   try {
     const conversation = await chatwootService.createConversation(inboxId, contact, content);
     res.status(201).json(conversation);
@@ -48,7 +47,7 @@ const handleWebhook = async (req, res) => {
         await handleConversationCreated(event);
         break;
       case 'message_created':
-        await handleMessageCreated(event, client);
+        await handleMessageCreatedInput(event, client);
         break;
       default:
         console.log('Event not handled:', event.event);
@@ -72,10 +71,16 @@ const handleConversationCreated = async (event) => {
   }
 };
 
-const handleMessageCreated = async (event, client) => {
+const handleMessageCreatedInput = async (event, client) => {
   try {
-    const { content, sender, conversation } = event;
+    console.log("Esto es el event:", event)
+    const { content, sender, conversation, message_type } = event;
+    if (message_type !== "outgoing") {
+      console.log(`Ignoring non-outgoing message type: ${message_type}`);
+      return; // Ignora si no es un mensaje saliente
+    }
     const { name } = sender;
+    console.log('conersario en handleMessage:', conversation)
     const { id: conversation_id, meta } = conversation;
     console.log("meta.sender.phone_number fo check:", meta.sender.phone_number)
     const  phone_number  = meta?.sender?.phone_number.replace('+', '');
@@ -90,7 +95,7 @@ const handleMessageCreated = async (event, client) => {
       console.log('Phone number is not available for sender.');
     }
   } catch (error) {
-    console.error('Error in handleMessageCreated:', error);
+    console.error('Error in handleMessageCreatedInput:', error);
   }
 };
 

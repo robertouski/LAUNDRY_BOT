@@ -45,15 +45,16 @@ const main = async () => {
 
     
     const bot = createBot(configBot, configExtra);
-    console.log('Bot:', bot);
 
     bot.then(initializedBot => {
-      console.log('Bot initialized:', initializedBot);
       const serverHttp = new ServerHttp(PORT, adapterProvider);
       serverHttp.initialization(initializedBot);
     }).catch(error => {
       console.log('Error during bot initialization:', error);
     });
+
+
+    
   } catch (error) {
     console.log('Error found on app.js:', error);
   }

@@ -21,7 +21,8 @@ module.exports = async(ctx, ctxFn)=> {
     try {
       const inbox = await createInbox(inboxName);
       console.log('Inbox created:', inbox);
-      return await ctxFn.flowDynamic('Un agente se pondrá en contacto contigo pronto. Hasta entonces escribeme una descripción de lo que sucede para que se atienda de la mejora manera 👩🏻‍💻🫧');
+      await ctxFn.flowDynamic('Un agente se pondrá en contacto contigo pronto. Hasta entonces escribeme una descripción de lo que sucede para que se atienda de la mejora manera 👩🏻‍💻🫧');
+      return ctxFn.gotoFlow(require())
     } catch (error) {
       console.error('Error creating inbox:', error);
       return await ctxFn.flowDynamic('Hubo un error al crear el inbox para el agente.');
