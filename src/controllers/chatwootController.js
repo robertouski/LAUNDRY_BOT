@@ -24,30 +24,19 @@ const createConversation = async (req, res) => {
   }
 };
 
-const createConversationInLaundryChicBotInbox = async (req, res) => {
-  const { contact, message } = req.body;
-  try {
-    const inboxId = await chatwootService.getInboxIdByName('LAUNDRY CHIC BOT');
-    const messageContent = message[0]?.content;
-    const conversation = await chatwootService.createConversation(null, inboxId, contact, messageContent);
-    res.status(201).json(conversation);
-  } catch (error) {
-    console.error('Error in createConversationInLaundryChicBotInbox:', error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
 
 const handleWebhook = async (req, res) => {
   try {
     const event = req.body;
-    const client = req.providerWs.getInstance(); 
+    console.log('event:', event)
+    const bot = req.providerWs; 
+    console.log('bot', bot)
     switch (event.event) {
       case 'conversation_created':
         await handleConversationCreated(event);
         break;
       case 'message_created':
-        await handleMessageCreatedInput(event, client);
+        await handleMessageCreatedInput(event, bot);
         break;
       default:
         console.log('Event not handled:', event.event);
@@ -71,7 +60,7 @@ const handleConversationCreated = async (event) => {
   }
 };
 
-const handleMessageCreatedInput = async (event, client) => {
+const handleMessageCreatedInput = async (event, bot) => {
   try {
     console.log("Esto es el event:", event)
     const { content, sender, conversation, message_type } = event;
@@ -79,6 +68,21 @@ const handleMessageCreatedInput = async (event, client) => {
       console.log(`Ignoring non-outgoing message type: ${message_type}`);
       return; // Ignora si no es un mensaje saliente
     }
+    const mapperAttributes = event?.changed_attributes?.map((a) => Object.keys(a)).flat(2)
+    console.log('mapperAtri:', mapperAttributes)
+    if (event?.event === 'conversation_updated' && mapperAttributes.includes('assignee_id')) {
+      const phone = event?.meta?.sender?.phone_number.replace('+', '')
+      const idAssigned = event?.changed_attributes[0]?.assignee_id?.current_value ?? null
+      console.log("idAssigned:", idAssigned)
+
+      if(idAssigned){
+          client.dynamicBlacklist.add(phone)
+      }else{
+          client.dynamicBlacklist.remove(phone)
+      }
+      res.send('ok')
+      return
+  }
     const { name } = sender;
     console.log('conersario en handleMessage:', conversation)
     const { id: conversation_id, meta } = conversation;
@@ -89,7 +93,7 @@ const handleMessageCreatedInput = async (event, client) => {
 
     if (phone_number) {
       const chatId = phone_number.includes('@c.us') ? phone_number : `${phone_number}@c.us`;
-      await client.sendMessage(chatId, content);
+      await bot.getInstance().sendMessage(chatId, content);
       console.log(`Message sent to WhatsApp: ${phone_number}`);
     } else {
       console.log('Phone number is not available for sender.');
@@ -102,6 +106,5 @@ const handleMessageCreatedInput = async (event, client) => {
 module.exports = {
   createConversation,
   handleWebhook,
-  createInbox,
-  createConversationInLaundryChicBotInbox
+  createInbox
 };

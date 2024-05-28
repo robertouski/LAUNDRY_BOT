@@ -73,8 +73,6 @@ async talkToAssistant (assistantId, message = {}) {
     const messages = await this.openai.beta.threads.messages.list(
       thread.id
     );
-    console.log("messages:", messages)
-
     // Filtrar para obtener solo respuestas del asistente
     const assistantMessages = messages.data.filter(m => m.role === 'assistant');
     const lastMessage = assistantMessages[assistantMessages.length - 1];

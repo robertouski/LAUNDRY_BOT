@@ -14,6 +14,7 @@ const handlerMessage = async (
     const contact = await chatwoot.findOrCreateContact({
       from: dataIn.phone,
       name: dataIn.name,
+      inbox: inbox.id
     });
 		console.log('contact:', contact)
     if (!contact) throw new Error("Failed to find or create contact");
@@ -36,4 +37,15 @@ const handlerMessage = async (
   }
 };
 
-module.exports = { handlerMessage };
+const handlerContact  = async (dataIn = { phone: "", name: "" },
+chatwoot) => {
+  const contact = await chatwoot.findOrCreateContact({
+    from: dataIn.phone,
+    name: dataIn.name,
+  });
+  console.log('contact:', contact)
+  if (!contact) throw new Error("Failed to find or create contact");
+  return contact
+}
+
+module.exports = { handlerMessage, handlerContact };

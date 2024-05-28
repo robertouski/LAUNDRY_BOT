@@ -280,4 +280,59 @@ class ChatwootClass extends EventEmitter {
   };
 }
 
+addLabelToContact = async (contactId, labelId) => {
+  try {
+    const url = this.buildBaseUrl(`/contacts/${contactId}/label`);
+    const payload = {
+      label_id: labelId,
+    };
+
+    const dataFetch = await fetch(url, {
+      method: "POST",
+      headers: this.buildHeader(),
+      body: JSON.stringify(payload),
+    });
+
+    const response = await dataFetch.json();
+    if (!dataFetch.ok) {
+      throw new Error(`HTTP error! status: ${dataFetch.status}`);
+    }
+
+    console.log("Label added to contact:", response);
+    return response;
+  } catch (error) {
+    console.error(`[Error addLabelToContact]`, error);
+    return;
+  }
+};
+
+createLabel = async (labelData = { name: "", description: "" }) => {
+  try {
+    const url = this.buildBaseUrl(`/labels`);
+    const payload = {
+      name: labelData.name,
+      description: labelData.description,
+    };
+
+    const dataFetch = await fetch(url, {
+      method: "POST",
+      headers: this.buildHeader(),
+      body: JSON.stringify(payload),
+    });
+
+    const response = await dataFetch.json();
+    if (!dataFetch.ok) {
+      throw new Error(`HTTP error! status: ${dataFetch.status}`);
+    }
+
+    console.log("Label created:", response);
+    return response;
+  } catch (error) {
+    console.error(`[Error createLabel]`, error);
+    return;
+  }
+};
+
+
+
 module.exports = ChatwootClass;
