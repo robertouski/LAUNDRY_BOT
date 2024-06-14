@@ -177,7 +177,6 @@ class ChatwootClass extends EventEmitter {
     dataIn = { msg: "", mode: "", conversation_id: "", attachment: [] }
   ) => {
     try {
-      console.log('dataIn en createMessage:', dataIn)
       const url = this.buildBaseUrl(
         `/conversations/${dataIn.conversation_id}/messages`
       );
@@ -188,7 +187,6 @@ class ChatwootClass extends EventEmitter {
         private: "true",
       };
   
-      console.log("Payload:", payload);
   
       const dataFetch = await fetch(url, {
         method: "POST",

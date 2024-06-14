@@ -3,7 +3,6 @@ const handlerMessage = async (
   chatwoot
 ) => {
   try {
-		console.log('Esto recibo en index, handlerMessage:', dataIn)
     const inbox = await chatwoot.findOrCreateInbox({
       name: "LAUNDRY_CHIC-BOTWS",
     });
