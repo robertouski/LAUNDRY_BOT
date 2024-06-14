@@ -115,6 +115,12 @@ async function createEvent(name, description, eventDate, location) {
         timeZone: "America/Guayaquil",
       },
       colorId: getRandomColor(),
+      reminders: {
+        useDefault: false, // Desactiva los recordatorios por defecto
+        overrides: [
+          { method: 'popup', minutes: 30 } // Muestra una notificación emergente 30 minutos antes del evento
+        ]
+      }
     };
 
     const response = await calendar.events.insert({
