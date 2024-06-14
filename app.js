@@ -3,7 +3,7 @@ require('dotenv').config();
 const { createBot, createProvider, createFlow, addKeyword } = require('@bot-whatsapp/bot');
 const WebWhatsappProvider = require('@bot-whatsapp/provider/web-whatsapp');
 const MockAdapter = require('@bot-whatsapp/database/mock');
-const loadFlows = require('./src/flows');
+const loadFlows = require('./src/flows/index.js');
 const AiService = require('./src/ai/ai.class.js');
 const ServerHttp = require('./src/http/index.js');
 const ChatwootService = require('./src/chatwoot/chatwoot.class.js')
