@@ -9,7 +9,7 @@ const ServerHttp = require('./src/http/index.js');
 const ChatwootService = require('./src/chatwoot/chatwoot.class.js')
 
 const apiKey = process.env.OPENAI_API_KEY;
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 const chatwootConfig = {
   account: process.env.CHATWOOT_ACCOUNT_ID,
