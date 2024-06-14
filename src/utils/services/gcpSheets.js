@@ -71,7 +71,6 @@ class GoogleSheetService {
           number: matchingRow._rawData[2] || "",
         };
       } else {
-        console.error("Número no encontrado.");
         return null;
       }
     } catch (err) {

@@ -1,42 +1,21 @@
-const chatwootService = require('../utils/services/chatwootService');
-
-
-
-const createInbox = async (req, res) => {
-  const { name } = req.body;
-  try {
-    const inbox = await chatwootService.createInbox(name);
-    res.status(201).json(inbox);
-  } catch (error) {
-    console.error('Error in createInbox:', error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const createConversation = async (req, res) => {
-  const { inboxId, contact, content } = req.body;
-  try {
-    const conversation = await chatwootService.createConversation(inboxId, contact, content);
-    res.status(201).json(conversation);
-  } catch (error) {
-    console.error('Error in createConversation:', error);
-    res.status(500).json({ error: error.message });
-  }
-};
+const { addToBlackList, removeFromBlackList } = require('../utils/handler/blacklistHandler.');
 
 
 const handleWebhook = async (req, res) => {
   try {
     const event = req.body;
     console.log('event:', event)
-    const bot = req.providerWs; 
-    console.log('bot', bot)
+    const client = req.providerWs; 
+    const bot = req.bot
     switch (event.event) {
       case 'conversation_created':
         await handleConversationCreated(event);
         break;
-      case 'message_created':
-        await handleMessageCreatedInput(event, bot);
+      case 'message_created' :
+        await handleMessageCreated(event, client, bot);
+        break;
+      case 'conversation_updated' :
+        await handleconversationUpdated(event);
         break;
       default:
         console.log('Event not handled:', event.event);
@@ -60,40 +39,47 @@ const handleConversationCreated = async (event) => {
   }
 };
 
-const handleMessageCreatedInput = async (event, bot) => {
+const handleconversationUpdated = async (event) => {
   try {
-    console.log("Esto es el event:", event)
+    const phone_number = event?.meta?.sender?.phone_number.replace("+", "");
+    if (event.status === "resolved") {
+      return removeFromBlackList(phone_number);
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.log("Error handleconversationUpdated:", error);
+  }
+};
+
+const handleMessageCreated = async (event, client, bot) => {
+  try {
     const { content, sender, conversation, message_type } = event;
+    const { name } = sender;
+    const { id: conversation_id, meta } = conversation;
+    const idAssigned = conversation?.meta?.assignee
+    const  phone_number  = meta?.sender?.phone_number.replace('+', '');
+
+    const conversationStatus = conversation.status
+    if (idAssigned && conversationStatus) {
     if (message_type !== "outgoing") {
       console.log(`Ignoring non-outgoing message type: ${message_type}`);
       return; // Ignora si no es un mensaje saliente
     }
-    const mapperAttributes = event?.changed_attributes?.map((a) => Object.keys(a)).flat(2)
-    console.log('mapperAtri:', mapperAttributes)
-    if (event?.event === 'conversation_updated' && mapperAttributes.includes('assignee_id')) {
-      const phone = event?.meta?.sender?.phone_number.replace('+', '')
-      const idAssigned = event?.changed_attributes[0]?.assignee_id?.current_value ?? null
-      console.log("idAssigned:", idAssigned)
 
-      if(idAssigned){
-          client.dynamicBlacklist.add(phone)
-      }else{
-          client.dynamicBlacklist.remove(phone)
-      }
-      res.send('ok')
-      return
+    if(idAssigned && conversationStatus ==='open'){
+      addToBlackList(phone_number)
+      console.log("Number added to MuteBot");
+    }else{
+      removeFromBlackList(phone_number)
+      console.log("Number removed to MuteBot");
+    }
   }
-    const { name } = sender;
-    console.log('conersario en handleMessage:', conversation)
-    const { id: conversation_id, meta } = conversation;
-    console.log("meta.sender.phone_number fo check:", meta.sender.phone_number)
-    const  phone_number  = meta?.sender?.phone_number.replace('+', '');
-
     console.log(`Message created with content: ${content}, from: ${name} (${phone_number})`);
-
-    if (phone_number) {
+    console.log("event.priveate", event.private)
+    if (phone_number && idAssigned && conversationStatus ==='open' && !event.private) {
       const chatId = phone_number.includes('@c.us') ? phone_number : `${phone_number}@c.us`;
-      await bot.getInstance().sendMessage(chatId, content);
+      await client.getInstance().sendMessage(chatId, content);
       console.log(`Message sent to WhatsApp: ${phone_number}`);
     } else {
       console.log('Phone number is not available for sender.');
@@ -104,7 +90,5 @@ const handleMessageCreatedInput = async (event, bot) => {
 };
 
 module.exports = {
-  createConversation,
   handleWebhook,
-  createInbox
 };

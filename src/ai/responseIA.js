@@ -6,7 +6,8 @@ const {
   generatePromptScheduleHourInterpreter,
 } = require("./prompt/schedule");
 
-const assistantId = process.env.ASSISTANT_ID;
+const assistantHandler = require("../ai/handler/assistantHandler");
+
 const interpreterResponse = async (body, AIresult) => {
   try {
     const ai = AIresult;
@@ -29,9 +30,9 @@ const aclarationResponse = async (body, AIresult) => {
       role: "system",
       content: PromptResponse,
     });
-    const assistantMsg = await ai.createChat(tmpMessages);
+    const assistantMsg = await ai.createChat(tmpMessages,  'gpt-3.5-turbo-16k', 1 );
     await ai.clearHistory();
-    return String(assistantMsg);
+    return String(assistantMsg.replace('J:', ''));
   } catch (error) {
     console.log("ERROR", error);
   }
@@ -39,7 +40,7 @@ const aclarationResponse = async (body, AIresult) => {
 const informativeResponse = async (body, AIresult, idPhone) => {
   try {
     const ai = AIresult;
-    const assistantResponse = await ai.talkToAssistant(assistantId, body);
+    const assistantResponse = await assistantHandler(body, ai);
     ai.addHistory(idPhone, {
       role: "assistant",
       content: assistantResponse,

@@ -1,21 +1,29 @@
 const PROMPT =
 `
-Jessica es una asistente virtual diseñada para atender a los clientes de una lavandería. Durante las interacciones, los usuarios pueden tener diferentes tipos de solicitudes. Tu tarea es analizar la última parte de la conversación entre un usuario y Jessica para identificar la intención principal del usuario.
+Funcionaré como un analizador de las intenciones de los mensajes de los usuarios, enfocándome en identificar si desean información, agendar un servicio o hablar con un agente humano. Mi tarea es analizar únicamente la intención del último mensaje del usuario para determinar la categoría adecuada.
 
 Instrucciones para determinar la intención del usuario:
 
-INFORMACION: El usuario busca detalles sobre la lavandería, como precios, servicios, horarios, o hace una pregunta específica relacionada con el negocio. También se aplica si el usuario se despide indicando que recibió la información que necesitaba.
-AGENDAR: El usuario tiene la intención de reservar un servicio, especificar un día para una reserva, o solicitar manejo de su ropa, como organizar la recolección o entrega.
-AGENTE: El usuario prefiere no interactuar más con la IA y pide explícitamente hablar con una persona.
-NO_SENSE: El usuario hace preguntas o comentarios que no tienen relación con los servicios de una lavandería o son completamente irrelevantes al contexto.
-Por favor, analiza únicamente la intención del último mensaje del usuario en la conversación para determinar la categoría adecuada.
+INFORMACION: Si el usuario realiza una pregunta específica sobre precios, servicios, horarios o cualquier otro detalle relacionado con el negocio. Esto incluye también si el usuario se despide indicando que recibió la información que necesitaba.
 
-Ejemplo de respuesta: INFORMACION
+AGENDAR: Si el usuario expresa claramente la intención de que se recoja o entregue su ropa, como en frases "quiero que vengan a recoger mi ropa", "¿pueden pasar a ver mi ropa?", o cualquier variante que implique organizar un servicio específico.
 
-Conversación:
+AGENTE: Si el usuario solicita explícitamente hablar con una persona, indicando una preferencia por la interacción humana en lugar de la respuesta automatizada.
+
+NO_SENSE: Si el mensaje del usuario es completamente irrelevante al contexto de los servicios de lavandería o carece de sentido en el marco de la conversación actual.
+
+Cuando un mensaje pueda interpretarse de más de una manera, priorizaré INFORMACION a menos que haya indicadores claros de la intención de AGENDAR. Esto asegura que el usuario reciba siempre respuestas útiles, fomentando una experiencia positiva incluso en casos de ambigüedad.
+
+Historial de conversacion:
 "%HISTORY%"
 
-En este contexto, centra tu análisis en el último mensaje del usuario para determinar su intención principal.
+Ejemplos de interpretación correcta:
+
+Usuario pregunta "¿Cuánto cuesta lavar camisetas?" → INFORMACION
+Usuario dice "¿Pueden venir a recoger mi ropa mañana?" → AGENDAR
+Usuario dice "Prefiero hablar con alguien, ¿puedo?" → AGENTE
+Usuario comenta "¿Qué piensas sobre el clima?" → NO_SENSE
+Esta estructura de interpretación ayudará a minimizar los errores de clasificación y mejorará la efectividad de las respuestas proporcionadas por la IA, asegurando que cada usuario reciba la atención adecuada a su consulta o solicitud.
 
 `
 
@@ -36,7 +44,7 @@ const generatePromptInterpreter = (history) => {
   const fullTxt = tmp.reverse().join("\n");
 
   const txt = PROMPT.replace("%HISTORY%", fullTxt);
-  console.log("txt:", txt)
+  console.log(txt)
   return txt;
 }
 

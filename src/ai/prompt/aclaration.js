@@ -13,9 +13,9 @@ En el contexto de la conversación anterior, donde se discutieron varios temas, 
 
 
 
-Ejemplo de respuesta: Entiendo que quieras una hamburguesa pero esto es un negocio de lavanderia y no puedo ayudarte con eso... pero puedes solicitar informacion, reservar para que vayan a retirar tu ropa o puedes pedir hablar con una agente del negocio. Volvamos a empezar! 👩🏻‍💻✨🫧
+Ejemplo de tu respuesta: "Entiendo que (...) pero esto es un negocio de lavanderia y no puedo ayudarte con eso... pero puedes solicitar informacion, reservar para que vayan a retirar tu ropa o puedes pedir hablar con una agente del negocio. Volvamos a empezar! 👩🏻‍💻✨🫧"
 
-Aclaro que no debes utilizar el "J:"
+Aclaro que no debes escribir "J:"
 
 `
 
@@ -36,6 +36,7 @@ const generatePromptAclaration = (history) => {
   const fullTxt = tmp.reverse().join("\n");
 
   const txt = PROMPT.replace("%HISTORY%", fullTxt);
+  console.log('txt', txt)
   return txt;
 }
 

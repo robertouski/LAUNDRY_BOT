@@ -3,14 +3,21 @@ const { typing } = require("../utils/tools/typing");
 const { scheduleHourResponse } = require("../ai/responseIA");
 const { getCurrentTime } = require("../utils/tools/currentDate");
 const { freeCalendarSlots } = require("../utils/services/gcpCalendar");
-const { availableSlotsHandler } = require("../utils/handler/availableSlotsHandler");
+const {
+  availableSlotsHandler,
+} = require("../utils/handler/availableSlotsHandler");
 const scheduleDateFinalFlow = require("./finalFlowResults");
-const { createInbox } = require("../utils/services/chatwootService");
 
 const captureName = addKeyword(EVENTS.ACTION).addAction(
   { capture: true },
   async (ctx, ctxFn) => {
     const ai = await ctxFn.extensions.ai;
+    const chatwoot = await ctxFn.extensions.chatwoot;
+    await chatwoot.findOrCreateContact({
+      from: ctx.from,
+      name: ctx.body,
+      inbox: "",
+    });
     await ctxFn.state.update({ name: ctx.body });
     ai.addHistory(ctx.from, {
       role: "user",
@@ -28,20 +35,29 @@ const captureName = addKeyword(EVENTS.ACTION).addAction(
   }
 );
 
-const captureDate = addKeyword(EVENTS.ACTION).addAction(
-  { capture: true },
-  async (ctx, ctxFn) => {
+const captureDate = addKeyword(EVENTS.ACTION)
+  .addAction({ capture: true }, async (ctx, ctxFn) => {
     const userAnswer = ctx.body;
-    if (userAnswer === "SI" || userAnswer === "si" || userAnswer === "Si") {
+    if (
+      userAnswer === "SI" ||
+      userAnswer === "si" ||
+      userAnswer === "Si" ||
+      userAnswer === "Sí" ||
+      userAnswer === "sÍ" ||
+      userAnswer === "sI"
+    ) {
       await ctxFn.flowDynamic(
-        "Perfecto! Podrias decirme la hora que deseas? Atendemos de 8 AM hasta las 4 PM 👩🏻‍💻🫧"
+        "Perfecto! Podrias decirme la hora que deseas? Atendemos de 8:30 AM hasta las 6:00 PM 👩🏻‍💻🫧"
       );
-      await ctxFn.flowDynamic('Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*')
-      return
+      await ctxFn.flowDynamic(
+        'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
+      );
+      return;
     } else if (
       userAnswer === "NO" ||
       userAnswer === "no" ||
-      userAnswer === "No"
+      userAnswer === "No"||
+      userAnswer === "nO"
     ) {
       await ctxFn.flowDynamic(
         "Entiendo, volvamos a intentarlo. Me ayudarías bastante si también me das el día que quieres con el número del día 👩🏻‍💻🫧"
@@ -52,32 +68,35 @@ const captureDate = addKeyword(EVENTS.ACTION).addAction(
         "Por favor, solo respondeme con un *SI* o un *NO* 👩🏻‍💻🫧"
       );
     }
-  }
-)
-.addAction({capture: true}, async(ctx, ctxFn) => {
-  const currentState = ctxFn.state.getMyState();
-  const ai = await ctxFn.extensions.ai;
-  const answer = ctx.body;
-  if (answer === "CANCELAR" || answer === "cancelar") {
-    return await ctxFn.endFlow(
-      "Volvamoslo a intentar! En que te puedo ayudar?"
+  })
+  .addAction({ capture: true }, async (ctx, ctxFn) => {
+    const currentState = ctxFn.state.getMyState();
+    const ai = await ctxFn.extensions.ai;
+    const answer = ctx.body;
+    if (answer === "CANCELAR" || answer === "cancelar") {
+      return await ctxFn.endFlow(
+        "Volvamoslo a intentar! En que te puedo ayudar?"
+      );
+    }
+    console.log("answer:", answer);
+    const currentTime = getCurrentTime();
+    const availableSlots = await freeCalendarSlots();
+    const userAvailableDay = await currentState?.scheduleDate;
+    const availableTime = await availableSlotsHandler(
+      availableSlots,
+      userAvailableDay
     );
-  }
-  console.log("answer:", answer);
-  const currentTime = getCurrentTime();
-  const availableSlots = await freeCalendarSlots();
-  const userAvailableDay = await currentState?.scheduleDate
-  const availableTime = await availableSlotsHandler(availableSlots, userAvailableDay);
-  console.log('availableTime:',  availableTime)
-  const IAschedule = await scheduleHourResponse(
-    answer,
-    ai,
-    availableTime,
-    currentTime
-  );
-  console.log("IAschedule:", IAschedule);
-  await ctxFn.state.update({iaResponseDate: IAschedule })
-  await ctxFn.gotoFlow(scheduleDateFinalFlow)
-})
+    console.log("availableTime:", availableTime);
+    const IAschedule = await scheduleHourResponse(
+      answer,
+      ai,
+      availableTime,
+      currentTime
+    );
+    console.log("IAschedule:", IAschedule);
+    await ctxFn.state.update({ iaResponseDate: IAschedule });
+    await ctxFn.state.update({ cleanScheduleFlow: true });
+    await ctxFn.gotoFlow(scheduleDateFinalFlow);
+  });
 
 module.exports = { captureName, captureDate };

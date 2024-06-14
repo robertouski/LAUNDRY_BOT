@@ -11,9 +11,6 @@ module.exports = async (ctx, ctxFn) => {
   const contact = await chatwoot.findContact(
     ctx.from
   );
-  console.log('contact en alreadyClient:', contact)
-  if (!contact) throw new Error("Failed to find or create contact");
-  console.log('userData:', userData)
   if(!userData && !currentState?.name && !contact){
   const ai = await ctxFn.extensions.ai
 

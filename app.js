@@ -45,7 +45,6 @@ const main = async () => {
 
     
     const bot = createBot(configBot, configExtra);
-    console.log("bot en app:", bot)
 
     bot.then(initializedBot => {
       const serverHttp = new ServerHttp(PORT, adapterProvider);

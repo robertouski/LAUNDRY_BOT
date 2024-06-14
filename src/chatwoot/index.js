@@ -7,8 +7,6 @@ const handlerMessage = async (
     const inbox = await chatwoot.findOrCreateInbox({
       name: "LAUNDRY_CHIC-BOTWS",
     });
-    console.log("inbox:", inbox)
-
     if (!inbox) throw new Error("Failed to find or create inbox");
 
     const contact = await chatwoot.findOrCreateContact({
@@ -16,14 +14,12 @@ const handlerMessage = async (
       name: dataIn.name,
       inbox: inbox.id
     });
-		console.log('contact:', contact)
     if (!contact) throw new Error("Failed to find or create contact");
     const conversation = await chatwoot.findOrCreateConversation({
       inbox_id: inbox.id,
       contact_id: contact.id,
       phone_number: dataIn.phone,
     });
-		console.log('conversation:', conversation)
     if (!conversation) throw new Error("Failed to find or create conversation");
 
     await chatwoot.createMessage({

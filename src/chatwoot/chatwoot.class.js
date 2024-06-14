@@ -52,7 +52,7 @@ class ChatwootClass extends EventEmitter {
         method: "GET",
       });
       const data = await dataFetch.json();
-      return data.payload[0];
+      return data.payload[0] || undefined;
     } catch (error) {
       console.error(`[Error searchByNumber]`, error);
       return [];
@@ -91,7 +91,7 @@ class ChatwootClass extends EventEmitter {
       const getContact = await this.findContact(dataIn.from);
       if (!getContact) {
         const contact = await this.createContact(dataIn);
-        return contact;
+        return contact ;
       }
       return getContact;
     } catch (error) {
@@ -147,7 +147,6 @@ class ChatwootClass extends EventEmitter {
                 (sender.id === dataIn.contact_id || sender.phone_number === dataIn.phone_number));
       });
   
-      console.log("Conversaciones filtradas por contacto:", filteredConversations);
       return filteredConversations.length > 0 ? filteredConversations : [];
     } catch (error) {
       console.error(`[Error findConversationByContactId]`, error);
@@ -167,7 +166,6 @@ class ChatwootClass extends EventEmitter {
         const conversationId = await this.createConversation(dataIn);
         return conversationId;
       }
-      console.log("Esto es getId en findOrCreateConversation", getId)
       return getId[0];
     } catch (error) {
       console.error(`[Error findOrCreateConversation]`, error);
@@ -329,6 +327,24 @@ createLabel = async (labelData = { name: "", description: "" }) => {
     return response;
   } catch (error) {
     console.error(`[Error createLabel]`, error);
+    return;
+  }
+};
+
+assignLabelToContact = async (contactId, labelName, labelDescription) => {
+  try {
+    // Buscar si ya existe la etiqueta
+    let labelId = await this.findLabelByName(labelName);
+    if (!labelId) {
+      // Crear etiqueta si no existe
+      const label = await this.createLabel({ name: labelName, description: labelDescription });
+      labelId = label.id; // Asegúrate de que el endpoint devuelva el ID correctamente
+    }
+
+    // Asignar etiqueta al contacto
+    return await this.addLabelToContact(contactId, labelId);
+  } catch (error) {
+    console.error(`[Error assignLabelToContact]`, error);
     return;
   }
 };
