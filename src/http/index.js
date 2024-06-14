@@ -13,23 +13,13 @@ class ServerHttp {
     this.port = _port;
     this.providerWs = _providerWs;
   }
+
   qrCtrl = (req, res) => {
     const pathQrImage = join(process.cwd(), "bot.qr.png");
-    stat(pathQrImage, (err, stats) => {
-      if (err) {
-        return res.status(404).send("QR image not found");
-      }
+    const fileStream = createReadStream(pathQrImage);
 
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Cache-Control': 'no-cache, no-store, must-revalidate', // Evita que el navegador almacene la imagen en caché
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      });
-
-      const fileStream = createReadStream(pathQrImage);
-      fileStream.pipe(res);
-    });
+    res.writeHead(200, { "Content-Type": "image/png" });
+    fileStream.pipe(res);
   };
 
   chatwootCtrl = (req, res) => {
