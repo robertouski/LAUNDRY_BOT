@@ -21,21 +21,22 @@ module.exports = async (ctx, ctxFn) => {
     } else if (IAinterpreter.includes("AGENTE")) {
       await ai.clearByFrom(ctx.from);
       addToBlackList(ctx.from);
-      const currentState = await ctxFn.state.getMyState();
       const MESSAGE = "Pronto un agente se contactara contigo! Por favor escribenos y detallanos lo que sucede para una mejor atención! 👩🏻‍💻✨"
       await ctxFn.flowDynamic(
         MESSAGE
       );
-      await handlerMessage(
-        {
-          phone: ctx.from,
-          name: currentState?.name,
-          message: MESSAGE,
-          mode: "outgoing",
-          attachment: [],
-        },
-        chatwoot
-      );
+      const chatwoot = await ctxFn.extensions.chatwoot;
+      const currentState = await ctxFn.state.getMyState();
+        await handlerMessage(
+          {
+            phone: ctx.from,
+            name: currentState?.name,
+            message: MESSAGE,
+            mode: "outgoing",
+            attachment: [],
+          },
+          chatwoot
+        );
       return await ctxFn.gotoFlow(require("../../flows/agentFlow"));
     } else if (IAinterpreter.includes("NO_SENSE")) {
       await ai.clearByFrom(ctx.from);

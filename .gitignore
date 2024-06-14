@@ -2,7 +2,7 @@ node_modules
 *_sessions
 .env
 *.log
-*.png
+bot.qr.png
 src/tmp/*
 !tmp/.gitkeep
 .wwebjs_auth/
