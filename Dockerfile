@@ -1,20 +1,23 @@
-FROM node:18-alpine
+FROM node:18-bullseye as app
 
 WORKDIR /app
 
-# Installs latest Chromium and necessary fonts.
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont
+COPY package*.json ./
+RUN npm install
+
+RUN apt-get update && apt-get install -y \
+    chromium \
+    libnss3 \
+    libfreetype6 \
+    libharfbuzz0b \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 COPY . .
-RUN npm install
+
+EXPOSE 4000
 
 CMD ["npm", "start"]
