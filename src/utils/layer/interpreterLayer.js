@@ -2,6 +2,7 @@ const {
   interpreterResponse,
   aclarationResponse,
 } = require("../../ai/responseIA");
+const { handlerMessage } = require("../../chatwoot/index");
 const { addToBlackList } = require("../handler/blacklistHandler.");
 const { typing } = require("../tools/typing");
 
@@ -20,8 +21,20 @@ module.exports = async (ctx, ctxFn) => {
     } else if (IAinterpreter.includes("AGENTE")) {
       await ai.clearByFrom(ctx.from);
       addToBlackList(ctx.from);
+      const currentState = await ctxFn.state.getMyState();
+      const MESSAGE = "Pronto un agente se contactara contigo! Por favor escribenos y detallanos lo que sucede para una mejor atención! 👩🏻‍💻✨"
       await ctxFn.flowDynamic(
-        "Pronto un agente se contactara contigo! Por favor escribenos y detallanos lo que sucede para una mejor atención! 👩🏻‍💻✨"
+        MESSAGE
+      );
+      await handlerMessage(
+        {
+          phone: ctx.from,
+          name: currentState?.name,
+          message: MESSAGE,
+          mode: "outgoing",
+          attachment: [],
+        },
+        chatwoot
       );
       return await ctxFn.gotoFlow(require("../../flows/agentFlow"));
     } else if (IAinterpreter.includes("NO_SENSE")) {

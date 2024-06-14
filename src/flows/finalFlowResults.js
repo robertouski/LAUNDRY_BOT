@@ -18,7 +18,7 @@ const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION, EVENTS.LOCATION])
   return await ctxFn.flowDynamic([{body: 'Enviame la ubicación GPS, para poder tener mas precisión al llegar! 📍', delay: 1000}])
 })
 .addAction({capture:true}, async(ctx, ctxFn)=>{
-  await ctxFn.state.update({latitude:ctx.location.latitude, longitude:ctx.location.longitude})
+  await ctxFn.state.update({latitude:ctx?.location?.latitude, longitude:ctx?.location?.longitude})
   return await ctxFn.flowDynamic([{body: 'Dame una descripción del tipo de prenda o del tipo de ropa con la que trabajaremos 👕✨', delay: 1000}])
 })
 .addAction({capture:true}, async(ctx, ctxFn)=>{

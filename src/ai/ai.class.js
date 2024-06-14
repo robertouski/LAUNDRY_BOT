@@ -93,13 +93,9 @@ class EmployeesAddon extends EventEmitter {
 
   async talkToAssistant(assistantId, message) {
     try {
-      console.log("Current working directory:", process.cwd());
 
       const filePathTxt = path.resolve(__dirname, "../../assets/LAVANDERIA_CHIC.txt");
       const filePathPdf = path.resolve(__dirname, "../../assets/LISTA_PRECIOS.pdf");
-
-      console.log(`TXT file path: ${filePathTxt}`);
-      console.log(`PDF file path: ${filePathPdf}`);
 
       const fileDataPdf = await this.openai.files.create({
           file: fs.createReadStream(filePathPdf),

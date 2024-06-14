@@ -78,7 +78,6 @@ const captureDate = addKeyword(EVENTS.ACTION)
         "Volvamoslo a intentar! En que te puedo ayudar?"
       );
     }
-    console.log("answer:", answer);
     const currentTime = getCurrentTime();
     const availableSlots = await freeCalendarSlots();
     const userAvailableDay = await currentState?.scheduleDate;

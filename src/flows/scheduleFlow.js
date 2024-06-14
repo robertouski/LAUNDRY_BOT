@@ -43,7 +43,6 @@ const scheduleFlow = addKeyword(EVENTS.ACTION)
       );
       
     }
-    console.log("answer:", answer);
     const currentTime = getCurrentTime();
     const availableSlots = await freeCalendarSlots();
     const onlyAvailableDays = extractDaysWithAvailableSlots(availableSlots);

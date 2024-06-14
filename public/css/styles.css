@@ -1,0 +1,60 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.logo, .instagram-icon {
+  width: 200px; /* Ajusta según el tamaño de tu logo */
+}
+
+h1 {
+  color: #007BFF;
+}
+
+p, .instagram {
+  font-size: 16px;
+  color: #666;
+}
+
+.qr-code img {
+  width: 300px; /* Ajusta según necesidades */
+  padding: 10px;
+  background-color: #fff; /* Fondo blanco para mejor escaneo del QR */
+  border: 1px solid #ccc;
+}
+
+.btn, .instagram {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background-color: #007BFF;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.instagram-icon {
+  width: 15px; /* Tamaño del icono de Instagram */
+}
+
+footer {
+  margin-top: 20px;
+  color: #666;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}

@@ -37,6 +37,10 @@ class ServerHttp {
       req.bot = bot;
       next();
     });
+
+    // Servir archivos estáticos desde la carpeta 'public'
+    this.app.use(express.static('public'));
+
     this.app.use(express.json()); // Para manejar JSON en las solicitudes
 
     // Ruta de prueba para verificar que el servidor está funcionando
@@ -53,7 +57,7 @@ class ServerHttp {
 
     this.app.listen(this.port, () => {
       console.log(``);
-      console.log(`🤯 http://localhost:${this.port}/scan-qr`);
+      console.log(`🤯 http://localhost:${this.port}`);
       console.log(`Server is running on port ${this.port}`);
       console.log(``);
     });

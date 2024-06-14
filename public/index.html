@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whatsapp QR - SabioBot</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="https://sabiobot.com/">
+                <img src="images/sabiobot-logo.jpg" alt="SabioBot Logo" class="logo">
+            </a>
+        </header>
+        <main>
+            <h1>Whatsapp QR</h1>
+            <p>Con este ChatBot, puedes configurar respuestas automatizadas para preguntas frecuentes, recibir y responder mensajes de manera automatizada, y hacer un seguimiento de las interacciones con los clientes. Además, nuestro Chatbot se integra fácilmente con otros sistemas y herramientas que ya esté utilizando en su negocio.</p>
+            <div class="qr-code">
+                <img id="qrImage" src="/scan-qr" alt="QR Code">
+            </div>
+            <a href="https://sabiobot.com/" class="btn">Visita SabioBot.com</a>
+            <!-- Instagram Link -->
+            <a href="https://www.instagram.com/sabiobots/" class="instagram">
+                <img src="images/instagram_icon.png" alt="Instagram Icon" class="instagram-icon">
+                Síguenos en Instagram
+            </a>
+        </main>
+        <footer>
+            SabioBot &bull; <a href="https://www.instagram.com/sabiobots/">Instagram</a>
+        </footer>
+    </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const qrImage = document.getElementById('qrImage');
+        setInterval(() => {
+            qrImage.src = "/scan-qr?" + new Date().getTime();
+        }, 61000); // 61 segundos
+    });
+    </script>
+</body>
+</html>

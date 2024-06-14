@@ -1,5 +1,5 @@
 const { addKeyword, EVENTS } = require("@bot-whatsapp/bot");
-const { handlerMessage } = require("../chatwoot");
+const { handlerMessage } = require("../chatwoot/index");
 
 const agentFlow = addKeyword(EVENTS.ACTION).addAction(
   { capture: true },

@@ -8,9 +8,7 @@ const informativeFlow = addKeyword(EVENTS.ACTION)
   try {
     const ai = await ctxFn.extensions.ai;
     const messages =  await generateConversation(await ai.getHistory(ctx.from));
-    console.log("messages:", messages)
     const IAinformative = await informativeResponse(messages, ai, ctx.from);
-    console.log(IAinformative)
     typing(ctx, ctxFn)
     const cleanIAResponse = cleanResponse(IAinformative)
     await ctxFn.flowDynamic(cleanIAResponse);
@@ -35,7 +33,6 @@ const generateConversation = (history) => {
   }
 
   return fullTxt = tmp.reverse().join("\n");
-  console.log('fullTxt:', fullTxt)
 
 }
 module.exports = informativeFlow
