@@ -11,19 +11,14 @@ const translateDateToSpanish = require("../utils/tools/dateConverter");
 
 const scheduleFlow = addKeyword(EVENTS.ACTION)
   .addAction(async (ctx, ctxFn) => {
-    const ai = await ctxFn.extensions.ai
-    const MESSAGE_1 = "Listo, comenzamos para ir a retirar tu ropa. ¿Podrías decirme qué día tienes disponible? Atendemos de lunes a sábado a partir de las 8:30 AM hasta las 6:00 PM 👩🏻‍💻✨"
+    const MESSAGE_1 = "Listo, comenzamos para ir a retirar tu ropa. ¿Podrías decirme qué día tienes disponible? Atendemos de lunes a sábado  👩🏻‍💻✨"
     const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
-    await ctxFn.flowDynamic(
-      MESSAGE_1
+    typing(ctx, ctxFn)
+    await ctxFn.flowDynamic([{body:MESSAGE_1, delay: 1000 }]
     );
-    await ctxFn.flowDynamic(
-      MESSAGE_2
+    typing(ctx, ctxFn)
+    await ctxFn.flowDynamic([{body:MESSAGE_2, delay: 1000 }]
     );
-    ai.addHistory(ctx.from, {
-      role: "assistant",
-      content: MESSAGE_1 + MESSAGE_2,
-    })
   })
   .addAction({ capture: true }, async (ctx, ctxFn) => {
     await ctxFn.state.update({ imWorking: true });

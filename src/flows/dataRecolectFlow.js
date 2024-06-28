@@ -46,12 +46,11 @@ const captureDate = addKeyword(EVENTS.ACTION)
       userAnswer === "sÍ" ||
       userAnswer === "sI"
     ) {
-      await ctxFn.flowDynamic(
-        "Perfecto! Podrias decirme la hora que deseas? Atendemos de 8:30 AM hasta las 6:00 PM 👩🏻‍💻🫧"
-      );
-      await ctxFn.flowDynamic(
-        'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
-      );
+      
+      const MESSAGE_1 = "Perfecto! Podrias decirme la hora que deseas? Atendemos de 8:30 AM hasta las 6:00 PM 👩🏻‍💻🫧"
+      const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
+      await ctxFn.flowDynamic([{body:MESSAGE_1, delay: 1000 }])
+      await ctxFn.flowDynamic([{body:MESSAGE_2, delay: 1000 }])
       return;
     } else if (
       userAnswer === "NO" ||
