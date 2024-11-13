@@ -7,6 +7,7 @@ const {
   availableSlotsHandler,
 } = require("../utils/handler/availableSlotsHandler");
 const scheduleDateFinalFlow = require("./finalFlowResults");
+const getRandomMilliseconds = require("../utils/tools/randomMilisecondNumb");
 
 const captureName = addKeyword(EVENTS.ACTION).addAction(
   { capture: true },
@@ -26,7 +27,7 @@ const captureName = addKeyword(EVENTS.ACTION).addAction(
     const currentState = await ctxFn.state.getMyState();
     typing(ctx, ctxFn);
     const MESSAGE = `Perfecto! ${currentState.name} en que puedo ayudarte? 👕🫧`;
-    await ctxFn.flowDynamic([{ body: MESSAGE, delay: 1000 }]);
+    await ctxFn.flowDynamic([{ body: MESSAGE, delay: getRandomMilliseconds()}]);
     ai.addHistory(ctx.from, {
       role: "assistant",
       content: MESSAGE,
@@ -49,8 +50,8 @@ const captureDate = addKeyword(EVENTS.ACTION)
       
       const MESSAGE_1 = "Perfecto! Podrias decirme la hora que deseas? Atendemos de 8:30 AM hasta las 6:00 PM 👩🏻‍💻🫧"
       const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
-      await ctxFn.flowDynamic([{body:MESSAGE_1, delay: 1000 }])
-      await ctxFn.flowDynamic([{body:MESSAGE_2, delay: 1000 }])
+      await ctxFn.flowDynamic([{body:MESSAGE_1, delay: getRandomMilliseconds() }])
+      await ctxFn.flowDynamic([{body:MESSAGE_2, delay: 2000 }])
       return;
     } else if (
       userAnswer === "NO" ||
@@ -58,8 +59,9 @@ const captureDate = addKeyword(EVENTS.ACTION)
       userAnswer === "No"||
       userAnswer === "nO"
     ) {
+      const MESSAGE_3 = "Entiendo, volvamos a intentarlo. Me ayudarías bastante si también me das el día que quieres con el número del día 👩🏻‍💻🫧"
       await ctxFn.flowDynamic(
-        "Entiendo, volvamos a intentarlo. Me ayudarías bastante si también me das el día que quieres con el número del día 👩🏻‍💻🫧"
+        [{body:MESSAGE_3, delay: getRandomMilliseconds() }]
       );
       await ctxFn.gotoFlow(require("./scheduleFlow"));
     } else {

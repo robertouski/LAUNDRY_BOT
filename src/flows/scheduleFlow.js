@@ -8,17 +8,20 @@ const {
 } = require("../utils/handler/availableSlotsHandler");
 const { captureDate } = require("./dataRecolectFlow");
 const translateDateToSpanish = require("../utils/tools/dateConverter");
+const getRandomMilliseconds = require("../utils/tools/randomMilisecondNumb");
 
 const scheduleFlow = addKeyword(EVENTS.ACTION)
   .addAction(async (ctx, ctxFn) => {
-    const MESSAGE_1 = "Listo, comenzamos para ir a retirar tu ropa. ¿Podrías decirme qué día tienes disponible? Atendemos de lunes a sábado  👩🏻‍💻✨"
-    const MESSAGE_2 = 'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*'
-    typing(ctx, ctxFn)
-    await ctxFn.flowDynamic([{body:MESSAGE_1, delay: 1000 }]
-    );
-    typing(ctx, ctxFn)
-    await ctxFn.flowDynamic([{body:MESSAGE_2, delay: 1000 }]
-    );
+    const MESSAGE_1 =
+      "Listo, comenzamos para ir a retirar tu ropa. ¿Podrías decirme qué día tienes disponible? Atendemos de lunes a sábado  👩🏻‍💻✨";
+    const MESSAGE_2 =
+      'Puedes escribir *"CANCELAR"* en cualquier momento para *no continuar*';
+    typing(ctx, ctxFn);
+    await ctxFn.flowDynamic([
+      { body: MESSAGE_1, delay: getRandomMilliseconds() },
+    ]);
+    typing(ctx, ctxFn);
+    await ctxFn.flowDynamic([{ body: MESSAGE_2, delay: 2000 }]);
   })
   .addAction({ capture: true }, async (ctx, ctxFn) => {
     await ctxFn.state.update({ imWorking: true });
@@ -28,15 +31,14 @@ const scheduleFlow = addKeyword(EVENTS.ACTION)
       ai.addHistory(ctx.from, {
         role: "user",
         content: answer,
-      })
+      });
       ai.addHistory(ctx.from, {
         role: "assistant",
         content: "Volvamoslo a intentar! En que te puedo ayudar?",
-      })
+      });
       return await ctxFn.endFlow(
         "Volvamoslo a intentar! En que te puedo ayudar?"
       );
-      
     }
     const currentTime = getCurrentTime();
     const availableSlots = await freeCalendarSlots();
@@ -56,9 +58,8 @@ const scheduleFlow = addKeyword(EVENTS.ACTION)
       const spanishDate = translateDateToSpanish(extractedDate);
       console.log(`Fecha capturada: ${extractedDate}`);
       await ctxFn.state.update({ scheduleDate: extractedDate });
-      await ctxFn.flowDynamic(
-        `Estas queriendo agendar el: ${spanishDate}, es correcto?\nPor favor, responder *SI* o *NO*`
-      );
+      const MESSAGE_1 = `Estas queriendo agendar el: ${spanishDate}, es correcto?\nPor favor, responder *SI* o *NO*`;
+      await ctxFn.flowDynamic([{ body: MESSAGE_1, delay: 4000 }]);
       await ctxFn.state.update({ imWorking: false });
       return await ctxFn.gotoFlow(captureDate);
     } else if (IAschedule === "NO_AVAILABLE") {

@@ -2,6 +2,7 @@ const { captureName } = require('../../flows/dataRecolectFlow')
 const { typing } = require('../tools/typing')
 
 const GoogleSheetService = require('../services/gcpSheets')
+const getRandomMilliseconds = require('../tools/randomMilisecondNumb')
 const googleSheetService  = new GoogleSheetService(process.env.GOOGLE_SHEET_ID)
 
 module.exports = async (ctx, ctxFn) => {
@@ -20,7 +21,7 @@ module.exports = async (ctx, ctxFn) => {
     await ctxFn.flowDynamic([
       {
         body: MESSAGE,
-        delay: 1000,
+        delay: getRandomMilliseconds(),
       },
     ])
     
@@ -28,7 +29,7 @@ module.exports = async (ctx, ctxFn) => {
     await ctxFn.flowDynamic([
       {
         body: MESSAGE_2,
-        delay: 500,
+        delay: 2000,
       },
     ]);
     ai.addHistory(ctx.from, {

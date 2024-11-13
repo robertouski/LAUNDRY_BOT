@@ -4,6 +4,7 @@ const {
 } = require("../../ai/responseIA");
 const { handlerMessage } = require("../../chatwoot/index");
 const { addToBlackList } = require("../handler/blacklistHandler.");
+const getRandomMilliseconds = require("../tools/randomMilisecondNumb");
 const { typing } = require("../tools/typing");
 
 module.exports = async (ctx, ctxFn) => {
@@ -22,9 +23,7 @@ module.exports = async (ctx, ctxFn) => {
       await ai.clearByFrom(ctx.from);
       addToBlackList(ctx.from);
       const MESSAGE = "Pronto un agente se contactara contigo! Por favor escribenos y detallanos lo que sucede para una mejor atención! 👩🏻‍💻✨"
-      await ctxFn.flowDynamic(
-        MESSAGE
-      );
+      await ctxFn.flowDynamic([{body: MESSAGE, delay: getRandomMilliseconds()}]);
       const chatwoot = await ctxFn.extensions.chatwoot;
       const currentState = await ctxFn.state.getMyState();
         await handlerMessage(
@@ -42,7 +41,7 @@ module.exports = async (ctx, ctxFn) => {
       await ai.clearByFrom(ctx.from);
       const IAresponse = await aclarationResponse(messages, ai);
       typing(ctx, ctxFn);
-      return await ctxFn.flowDynamic([{ body: IAresponse, delay: 1000 }]);
+      return await ctxFn.flowDynamic([{ body: IAresponse, delay: getRandomMilliseconds() }]);
     }
   } catch (error) {
     console.log("Error Interpreter:", error);

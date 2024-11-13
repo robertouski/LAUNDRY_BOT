@@ -3,6 +3,7 @@ const { createEvent } = require("../utils/services/gcpCalendar");
 
 const GoogleSheetService = require("../utils/services/gcpSheets");
 const { typing } = require("../utils/tools/typing");
+const getRandomMilliseconds = require("../utils/tools/randomMilisecondNumb");
 const googleSheet = new GoogleSheetService(process.env.GOOGLE_SHEET_ID);
 
 const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION])
@@ -20,7 +21,7 @@ const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION])
     await ctxFn.flowDynamic([
       {
         body: "Comparteme la siguiente información para agendarte 👩🏻‍💻",
-        delay: 1000,
+        delay: getRandomMilliseconds(),
       },
     ]);
     return;
@@ -30,7 +31,7 @@ const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION])
     return await ctxFn.flowDynamic([
       {
         body: "Escribeme tu ubicación (dame instrucciones de como llegar) o mandame tu ubicación GPS 📍",
-        delay: 2000,
+        delay: getRandomMilliseconds(),
       },
     ]);
   })
@@ -48,7 +49,7 @@ const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION])
     return await ctxFn.flowDynamic([
       {
         body: "Dame una descripción del tipo de prenda o del tipo de ropa con la que trabajaremos 👕✨",
-        delay: 2000,
+        delay: getRandomMilliseconds(),
       },
     ]);
   })
@@ -69,7 +70,7 @@ const scheduleDateFinalFlow = addKeyword([EVENTS.ACTION])
     await ctxFn.flowDynamic([
       {
         body: `Perfecto ${name}, te registre exitosamente! Si tienes alguna pregunta adicional puedes consultarme. Ten un excelente dia 👋🏻`,
-        delay: 2000,
+        delay: getRandomMilliseconds(),
       },
     ]);
 

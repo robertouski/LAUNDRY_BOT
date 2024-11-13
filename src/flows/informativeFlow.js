@@ -2,6 +2,7 @@ const { addKeyword, EVENTS } = require("@bot-whatsapp/bot");
 const { typing } = require("../utils/tools/typing");
 const cleanResponse = require("../utils/handler/cleanResponse");
 const { informativeResponse } = require("../ai/responseIA");
+const getRandomMilliseconds = require("../utils/tools/randomMilisecondNumb");
 
 const informativeFlow = addKeyword(EVENTS.ACTION)
 .addAction(async (ctx, ctxFn) => {
@@ -11,7 +12,7 @@ const informativeFlow = addKeyword(EVENTS.ACTION)
     const IAinformative = await informativeResponse(messages, ai, ctx.from);
     typing(ctx, ctxFn)
     const cleanIAResponse = cleanResponse(IAinformative)
-    await ctxFn.flowDynamic(cleanIAResponse);
+    await ctxFn.flowDynamic([{body:cleanIAResponse, delay: getRandomMilliseconds()}]);
   } catch (error) {
     console.log("Error on informativeFlow:", error);
   }
